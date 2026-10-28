@@ -1,0 +1,18 @@
+{% assign first_product = collections.all.products.first %}
+{% assign second_product = collections.all.products[1] %}
+<section class="home-hero" style="--hero-columns:{{ section.settings.columns }}">
+  <a class="home-hero__main" href="{{ section.settings.main_link | default: routes.all_products_collection_url }}">
+    {% if section.settings.main_image != blank %}{{ section.settings.main_image | image_url: width: 2000 | image_tag: class: 'home-hero__image', widths: '900, 1400, 1800, 2000', sizes: '(min-width: 900px) 66vw, 100vw', loading: 'eager' }}
+    {% elsif first_product.featured_image %}{{ first_product.featured_image | image_url: width: 2000 | image_tag: class: 'home-hero__image', widths: '900, 1400, 1800, 2000', sizes: '(min-width: 900px) 66vw, 100vw', loading: 'eager', alt: first_product.title }}
+    {% else %}<span class="campaign-placeholder">Campaign image — main</span>{% endif %}
+    <div class="home-hero__caption"><span class="eyebrow">{{ section.settings.eyebrow | escape }}</span><span class="home-hero__title">{{ section.settings.caption | escape }}</span><span class="text-link">{{ section.settings.button_label | escape }}</span></div>
+  </a>
+  <a class="home-hero__secondary" href="{{ section.settings.secondary_link | default: routes.all_products_collection_url }}">
+    {% if section.settings.secondary_image != blank %}{{ section.settings.secondary_image | image_url: width: 1200 | image_tag: class: 'home-hero__image', widths: '600, 900, 1200', sizes: '(min-width: 900px) 34vw, 100vw', loading: 'eager' }}
+    {% elsif second_product.featured_image %}{{ second_product.featured_image | image_url: width: 1200 | image_tag: class: 'home-hero__image', widths: '600, 900, 1200', sizes: '(min-width: 900px) 34vw, 100vw', loading: 'eager', alt: second_product.title }}
+    {% else %}<span class="campaign-placeholder">Campaign image — detail</span>{% endif %}
+    <span class="home-hero__detail">{{ section.settings.secondary_caption | escape }}</span>
+  </a>
+</section>
+{% schema %}{"name":"Editorial hero","settings":[{"type":"image_picker","id":"main_image","label":"Main campaign image"},{"type":"image_picker","id":"secondary_image","label":"Secondary campaign image"},{"type":"text","id":"eyebrow","label":"Eyebrow","default":"The collection"},{"type":"text","id":"caption","label":"Main caption","default":"A considered collection."},{"type":"text","id":"button_label","label":"Link label","default":"Shop the collection"},{"type":"url","id":"main_link","label":"Main link"},{"type":"text","id":"secondary_caption","label":"Secondary caption","default":"The details"},{"type":"url","id":"secondary_link","label":"Secondary link"},{"type":"select","id":"columns","label":"Desktop column ratio","options":[{"value":"2fr 1fr","label":"Two thirds / one third"},{"value":"1fr 1fr","label":"Equal columns"}],"default":"2fr 1fr"}]}
+{% endschema %}

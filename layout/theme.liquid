@@ -9,8 +9,10 @@
     {% if page_description != blank %}<meta name="description" content="{{ page_description | escape }}">{% endif %}
     {{ content_for_header }}
     {{ 'theme.css' | asset_url | stylesheet_tag }}
+    {{ 'home.css' | asset_url | stylesheet_tag }}
+    <style>:root{--bg:{{ settings.background }};--text:{{ settings.text }};--muted:{{ settings.muted }};--line:{{ settings.line }}}</style>
   </head>
-  <body>
+  <body class="template-{{ template.name }}">
     <a class="skip-link" href="#MainContent">Skip to content</a>
     {% sections 'header-group' %}
     <main id="MainContent" role="main">{{ content_for_layout }}</main>
