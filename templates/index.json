@@ -1,1 +1,69 @@
-{"sections":{"hero":{"type":"home-hero","settings":{}},"panels":{"type":"editorial-panels","settings":{}},"arrivals":{"type":"featured-collection","settings":{"eyebrow":"New arrivals","title":"New Arrivals","collection":"all","limit":4}},"story":{"type":"home-story","settings":{}},"video":{"type":"campaign-video","settings":{}},"featured":{"type":"featured-edit","settings":{"collection":"all"}},"statement":{"type":"brand-statement","settings":{}},"journal":{"type":"journal-preview","settings":{"blog":"journal"}},"newsletter":{"type":"newsletter","settings":{}}},"order":["hero","panels","arrivals","story","video","featured","statement","journal","newsletter"]}
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "hero": {
+      "type": "home-hero",
+      "settings": {}
+    },
+    "panels": {
+      "type": "editorial-panels",
+      "settings": {}
+    },
+    "arrivals": {
+      "type": "featured-collection",
+      "settings": {
+        "eyebrow": "New arrivals",
+        "title": "New Arrivals",
+        "collection": "all",
+        "limit": 4
+      }
+    },
+    "story": {
+      "type": "home-story",
+      "settings": {}
+    },
+    "video": {
+      "type": "campaign-video",
+      "settings": {}
+    },
+    "featured": {
+      "type": "featured-edit",
+      "settings": {
+        "collection": "all"
+      }
+    },
+    "statement": {
+      "type": "brand-statement",
+      "settings": {}
+    },
+    "journal": {
+      "type": "journal-preview",
+      "settings": {
+        "blog": "journal"
+      }
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {}
+    }
+  },
+  "order": [
+    "hero",
+    "panels",
+    "arrivals",
+    "story",
+    "video",
+    "featured",
+    "statement",
+    "journal",
+    "newsletter"
+  ]
+}

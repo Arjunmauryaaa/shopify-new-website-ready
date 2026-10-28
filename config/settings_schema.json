@@ -1,1 +1,44 @@
-[{"name":"theme_info","theme_name":"Arjunta Editorial","theme_author":"Arjunta","theme_version":"1.1.0","theme_documentation_url":"https://shopify.dev/docs/storefronts/themes","theme_support_url":"https://help.shopify.com/"},{"name":"Theme settings","settings":[{"type":"color","id":"background","label":"Background","default":"#ffffff"},{"type":"color","id":"text","label":"Text","default":"#171715"},{"type":"color","id":"muted","label":"Muted text","default":"#686661"},{"type":"color","id":"line","label":"Lines","default":"#dad8d2"},{"type":"image_picker","id":"logo","label":"Logo image"}]}]
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Arjunta Editorial",
+    "theme_author": "Arjunta",
+    "theme_version": "1.1.0",
+    "theme_documentation_url": "https://shopify.dev/docs/storefronts/themes",
+    "theme_support_url": "https://help.shopify.com/"
+  },
+  {
+    "name": "Theme settings",
+    "settings": [
+      {
+        "type": "color",
+        "id": "background",
+        "label": "Background",
+        "default": "#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "text",
+        "label": "Text",
+        "default": "#171715"
+      },
+      {
+        "type": "color",
+        "id": "muted",
+        "label": "Muted text",
+        "default": "#686661"
+      },
+      {
+        "type": "color",
+        "id": "line",
+        "label": "Lines",
+        "default": "#dad8d2"
+      },
+      {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Logo image"
+      }
+    ]
+  }
+]
