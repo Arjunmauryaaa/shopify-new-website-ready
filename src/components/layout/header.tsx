@@ -68,10 +68,10 @@ export function Header() {
               <Link href="/account">Account</Link>
             </li>
           </ul>
-          <button type="button" className="icon-btn" aria-label="Search" onClick={() => setSearchOpen(true)}>
+          <button type="button" className="icon-btn header__search" aria-label="Search" onClick={() => setSearchOpen(true)}>
             <SearchIcon />
           </button>
-          <button type="button" className="icon-btn bag-btn" aria-label={`Open bag, ${count} ${count === 1 ? "item" : "items"}`} onClick={openDrawer}>
+          <button type="button" className="icon-btn bag-btn header__bag" aria-label={`Open bag, ${count} ${count === 1 ? "item" : "items"}`} onClick={openDrawer}>
             <BagIcon />
             <span className="bag-btn__count" data-testid="cart-count" aria-hidden="true">
               {count > 0 ? count : ""}

@@ -8,8 +8,26 @@ import { ShopifyMedia } from "@/components/ui/media";
 import { productPriceDisplay } from "@/lib/format";
 import type { ProductCard } from "@/lib/shopify/types";
 import { track } from "@/lib/analytics";
+import { brand } from "@/config/brand";
 import { useMarket } from "@/providers/market-provider";
 import { useUI } from "@/providers/ui-provider";
+
+const RECENT_KEY = "recent-searches:v1";
+const readRecent = (): string[] => {
+  try {
+    const v = JSON.parse(localStorage.getItem(RECENT_KEY) ?? "[]");
+    return Array.isArray(v) ? v.filter((x) => typeof x === "string").slice(0, 5) : [];
+  } catch {
+    return [];
+  }
+};
+const writeRecent = (list: string[]) => {
+  try {
+    localStorage.setItem(RECENT_KEY, JSON.stringify(list));
+  } catch {
+    /* storage unavailable: recents are a convenience only */
+  }
+};
 
 type State = { status: "idle" | "loading" | "done" | "error"; products: ProductCard[]; total: number };
 
@@ -30,7 +48,12 @@ function SearchPanel({ onClose }: { onClose: () => void }) {
   const [active, setActive] = useState(-1);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => inputRef.current?.focus(), []);
+  const [recent, setRecent] = useState<string[]>([]);
+  useEffect(() => {
+    inputRef.current?.focus();
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- localStorage is only readable after mount
+    setRecent(readRecent());
+  }, []);
 
   useEffect(() => {
     const q = term.trim();
@@ -61,6 +84,7 @@ function SearchPanel({ onClose }: { onClose: () => void }) {
     const q = term.trim();
     if (!q) return;
     track({ name: "search", term: q });
+    writeRecent([q, ...readRecent().filter((r) => r.toLowerCase() !== q.toLowerCase())].slice(0, 5));
     if (active >= 0 && state.products[active]) router.push(`/products/${state.products[active].handle}`);
     else router.push(`/search?q=${encodeURIComponent(q)}`);
     onClose();
@@ -106,10 +130,42 @@ function SearchPanel({ onClose }: { onClose: () => void }) {
       <div className="search__body" aria-live="polite">
         {state.status === "loading" && <p className="muted">Searching…</p>}
         {state.status === "error" && <p className="form-error">Search is unavailable right now. Please try again.</p>}
+        {state.status === "idle" && (
+          <div className="search__suggest">
+            {recent.length > 0 && (
+              <section aria-labelledby="recent-h">
+                <div className="search__sh">
+                  <h2 id="recent-h" className="label">Recent searches</h2>
+                  <button type="button" className="text-btn" onClick={() => { writeRecent([]); setRecent([]); }}>Clear</button>
+                </div>
+                <ul className="chips">
+                  {recent.map((r) => (
+                    <li key={r}><button type="button" className="chip" onClick={() => setTerm(r)}>{r}</button></li>
+                  ))}
+                </ul>
+              </section>
+            )}
+            <section aria-labelledby="browse-h">
+              <h2 id="browse-h" className="label">Browse</h2>
+              <ul className="chips">
+                {brand.nav.mobile.filter((n) => n.href.startsWith("/collections") || n.href === "/shop").map((n) => (
+                  <li key={n.href}><Link href={n.href} className="chip" onClick={onClose}>{n.label}</Link></li>
+                ))}
+              </ul>
+            </section>
+          </div>
+        )}
         {state.status === "done" && state.products.length === 0 && (
-          <p className="muted">
-            No results for “{term.trim()}”. Try a different term or <Link href="/shop" onClick={onClose}>browse all products</Link>.
-          </p>
+          <div className="search__suggest">
+            <p className="muted">
+              No results for “{term.trim()}”. Check the spelling, try a more general word, or start from one of these.
+            </p>
+            <ul className="chips">
+              {brand.nav.mobile.filter((n) => n.href.startsWith("/collections") || n.href === "/shop").map((n) => (
+                <li key={n.href}><Link href={n.href} className="chip" onClick={onClose}>{n.label}</Link></li>
+              ))}
+            </ul>
+          </div>
         )}
         {state.products.length > 0 && (
           <>

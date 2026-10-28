@@ -10,8 +10,9 @@ import { CartSummary } from "./cart-summary";
 import { TrustBlock } from "@/components/product/trust-block";
 
 export function CartDrawer() {
-  const { cart, drawerOpen, closeDrawer, error, clearError, status } = useCart();
+  const { cart, drawerOpen, closeDrawer, error, clearError, status, justAdded } = useCart();
   const lines = cart?.lines.nodes ?? [];
+  const added = justAdded ? lines.find((l) => l.merchandise.id === justAdded) : undefined;
 
   return (
     <Dialog open={drawerOpen} onClose={closeDrawer} side="right" label="Shopping bag" className="cart-dialog">
@@ -36,10 +37,16 @@ export function CartDrawer() {
           </div>
         ) : (
           <>
+            {added && (
+              <p className="added" role="status">
+                <span className="added__check" aria-hidden="true">✓</span>
+                <span><strong>Added to your bag</strong></span>
+              </p>
+            )}
             <div className="drawer__extras"><FreeShippingBar /></div>
             <ul className="cart-lines">
               {lines.map((line) => (
-                <CartLineItem key={line.id} line={line} onNavigate={closeDrawer} />
+                <CartLineItem key={line.id} line={line} onNavigate={closeDrawer} highlight={line.merchandise.id === justAdded} />
               ))}
             </ul>
             <div className="drawer__foot">

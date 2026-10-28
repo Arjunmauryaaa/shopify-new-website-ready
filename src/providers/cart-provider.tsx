@@ -14,6 +14,8 @@ type CartContextValue = {
   pending: string | null;
   error: string | null;
   drawerOpen: boolean;
+  /** Variant id of the item just added, so the drawer can confirm it. Cleared when the drawer closes. */
+  justAdded: string | null;
   openDrawer: () => void;
   closeDrawer: () => void;
   addItem: (variantId: string, quantity: number, options?: { openDrawer?: boolean }) => Promise<boolean>;
@@ -41,6 +43,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [pending, setPending] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [justAdded, setJustAdded] = useState<string | null>(null);
   const queue = useRef<Promise<unknown>>(Promise.resolve());
 
   useEffect(() => {
@@ -103,11 +106,21 @@ export function CartProvider({ children }: { children: ReactNode }) {
       pending,
       error,
       drawerOpen,
-      openDrawer: () => setDrawerOpen(true),
-      closeDrawer: () => setDrawerOpen(false),
+      justAdded,
+      openDrawer: () => {
+        setJustAdded(null);
+        setDrawerOpen(true);
+      },
+      closeDrawer: () => {
+        setDrawerOpen(false);
+        setJustAdded(null);
+      },
       addItem: async (variantId, quantity, options) => {
         const ok = await mutate({ action: "add", variantId, quantity }, "add");
-        if (ok && options?.openDrawer !== false) setDrawerOpen(true);
+        if (ok && options?.openDrawer !== false) {
+          setJustAdded(variantId);
+          setDrawerOpen(true);
+        }
         return ok;
       },
       updateItem: async (lineId, quantity) => void (await mutate({ action: "update", lineId, quantity }, lineId)),
@@ -132,7 +145,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       },
       clearError: () => setError(null),
     }),
-    [cart, status, pending, error, drawerOpen, mutate, market.slug],
+    [cart, status, pending, error, drawerOpen, justAdded, mutate, market.slug],
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

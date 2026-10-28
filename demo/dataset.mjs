@@ -32,7 +32,7 @@ export function build() {
       id: `gid://shopify/Product/${100 + i}`, handle: p.handle, title: p.title, vendor: "Arjunta", productType: p.type,
       availableForSale: available, tags: [], description: p.desc.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim(), descriptionHtml: p.desc,
       seo: { title: null, description: null },
-      options: [...(p.sizes ? [{ id: `o-size-${i}`, name: "Size", values: p.sizes }] : []), { id: `o-color-${i}`, name: "Color", values: p.colors.map((c) => c[0]) }],
+      options: [...(p.sizes ? [{ id: `o-size-${i}`, name: "Size", values: p.sizes }] : []), { id: `o-color-${i}`, name: "Color", values: p.colors.map((c) => c[0]), optionValues: p.colors.map((c) => ({ name: c[0], swatch: { color: c[1] } })) }],
       variants: { nodes: variants }, images: { nodes: images }, featuredImage: images[0], media: { nodes: [] },
       priceRange: { minVariantPrice: price, maxVariantPrice: price },
       compareAtPriceRange: { minVariantPrice: money(p.compareAt ?? 0), maxVariantPrice: money(p.compareAt ?? 0) },

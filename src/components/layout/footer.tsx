@@ -2,6 +2,7 @@ import Link from "@/components/ui/link";
 import { brand, type NavItem } from "@/config/brand";
 import { NewsletterForm } from "@/components/forms/newsletter-form";
 import { MarketSelector } from "./market-selector";
+import { ThemeToggle } from "./theme-toggle";
 import { Wordmark } from "./wordmark";
 
 function Column({ title, items }: { title: string; items: readonly NavItem[] }) {
@@ -53,7 +54,10 @@ export function Footer() {
         <p className="small muted">
           © {year} {brand.name}.
         </p>
-        <MarketSelector className="footer__market" />
+        <div className="footer__prefs">
+          <MarketSelector className="footer__market" />
+          <ThemeToggle />
+        </div>
       </div>
     </footer>
   );

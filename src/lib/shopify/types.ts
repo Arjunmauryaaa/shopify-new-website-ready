@@ -21,7 +21,8 @@ export type Variant = {
   image: ShopifyImage | null;
 };
 
-export type ProductOption = { id?: string; name: string; values: string[] };
+export type OptionValue = { name: string; swatch?: { color: string | null } | null };
+export type ProductOption = { id?: string; name: string; values: string[]; optionValues?: OptionValue[] };
 
 export type ProductCard = {
   id: string;

@@ -19,7 +19,7 @@ export function QuantityStepper({ line }: { line: CartLine }) {
   );
 }
 
-export function CartLineItem({ line, onNavigate }: { line: CartLine; onNavigate?: () => void }) {
+export function CartLineItem({ line, onNavigate, highlight = false }: { line: CartLine; onNavigate?: () => void; highlight?: boolean }) {
   const { removeItem, pending } = useCart();
   const { locale } = useMarket();
   const m = line.merchandise;
@@ -27,7 +27,7 @@ export function CartLineItem({ line, onNavigate }: { line: CartLine; onNavigate?
   const sale = isOnSale(line.cost.compareAtAmountPerQuantity, line.cost.amountPerQuantity);
 
   return (
-    <li className="cart-line" data-pending={pending === line.id || undefined}>
+    <li className="cart-line" data-pending={pending === line.id || undefined} data-new={highlight || undefined}>
       <Link href={`/products/${m.product.handle}`} onClick={onNavigate} className="cart-line__image" tabIndex={-1} aria-hidden="true">
         <ShopifyMedia image={m.image} ratio="4 / 5" sizes="120px" alt="" />
       </Link>

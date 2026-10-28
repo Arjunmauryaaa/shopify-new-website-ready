@@ -1,11 +1,13 @@
-import Link from "@/components/ui/link";
+import { EmptyState } from "@/components/ui/empty-state";
 
 export default function NotFound() {
   return (
-    <div className="page page--narrow empty">
+    <div className="page page--narrow">
+      <p className="label">Error 404</p>
       <h1 className="page-title">Page not found</h1>
-      <p className="muted">The page you’re looking for doesn’t exist or has moved.</p>
-      <Link href="/shop" className="btn btn--outline">Continue shopping</Link>
+      <EmptyState title="We can’t find that page." actions={[{ href: "/shop", label: "Continue shopping", primary: true }, { href: "/", label: "Back to home" }]}>
+        The link may be out of date, or the page may have moved.
+      </EmptyState>
     </div>
   );
 }

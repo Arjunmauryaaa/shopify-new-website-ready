@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "@/components/ui/link";
+import { EmptyState } from "@/components/ui/empty-state";
 import { useCart } from "@/providers/cart-provider";
 import { CartLineItem } from "./cart-lines";
 import { CartUpsell, FreeShippingBar, GiftOptions } from "./cart-extras";
@@ -24,10 +25,9 @@ export function CartView() {
 
   if (lines.length === 0) {
     return (
-      <div className="empty">
-        <p>Your bag is empty.</p>
-        <Link href="/shop" className="btn btn--outline">Continue shopping</Link>
-      </div>
+      <EmptyState title="Your bag is empty." actions={[{ href: "/shop", label: "Continue shopping", primary: true }, { href: "/wishlist", label: "View saved items" }]}>
+        Pieces you add will wait here for you.
+      </EmptyState>
     );
   }
 

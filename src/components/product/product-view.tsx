@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Dialog } from "@/components/ui/dialog";
 import { ArrowIcon, CloseIcon } from "@/components/ui/icons";
 import { Media } from "@/components/ui/media";
+import { PanZoom } from "@/components/ui/pan-zoom";
 import { formatMoney, isOnSale } from "@/lib/format";
 import { findVariant, galleryImages, initialSelection, isColorOption, optionValueState, resolveSelection, type Selection } from "@/lib/variants";
 import { brand } from "@/config/brand";
@@ -18,6 +19,8 @@ import type { Product } from "@/lib/shopify/types";
 import { useCart } from "@/providers/cart-provider";
 import { useMarket } from "@/providers/market-provider";
 import { WishlistButton } from "./wishlist-button";
+
+const swatchFor = (option: Product["options"][number], value: string) => option.optionValues?.find((v) => v.name === value)?.swatch?.color ?? undefined;
 
 export function ProductView({ product, variantParam, rating = null }: { product: Product; variantParam?: string; rating?: ReviewSummary | null }) {
   const variants = product.variants.nodes;
@@ -127,7 +130,19 @@ export function ProductView({ product, variantParam, rating = null }: { product:
               )}
             </div>
           ) : (
-            <button type="button" className="pdp__zoom" onClick={() => setZoom(true)} aria-label="View image full screen" aria-haspopup="dialog">
+            <button
+              type="button"
+              className="pdp__zoom"
+              onClick={() => setZoom(true)}
+              onPointerMove={(e) => {
+                if (e.pointerType !== "mouse") return;
+                const r = e.currentTarget.getBoundingClientRect();
+                e.currentTarget.style.setProperty("--zx", `${((e.clientX - r.left) / r.width) * 100}%`);
+                e.currentTarget.style.setProperty("--zy", `${((e.clientY - r.top) / r.height) * 100}%`);
+              }}
+              aria-label="View image full screen"
+              aria-haspopup="dialog"
+            >
               <Media src={current?.url} alt={current?.altText || product.title} ratio="4 / 5" sizes="(min-width: 1024px) 50vw, 100vw" position="50% 30%" priority />
             </button>
           )}
@@ -200,6 +215,7 @@ export function ProductView({ product, variantParam, rating = null }: { product:
                         setIndex(0); // the chosen variant's own image leads the gallery
                       }}
                     >
+                      {isColorOption(option.name) && swatchFor(option, value) && <span className="swatch" style={{ background: swatchFor(option, value) }} aria-hidden="true" />}
                       {value}
                       {state === "sold-out" && <span className="visually-hidden"> (sold out)</span>}
                     </button>
@@ -241,7 +257,13 @@ export function ProductView({ product, variantParam, rating = null }: { product:
 
       {showSticky && (
         <div className="sticky-buy" role="region" aria-label="Quick purchase">
-          <span className="sticky-buy__price">{formatMoney(variant?.price ?? product.priceRange.minVariantPrice, locale)}</span>
+          <span className="sticky-buy__thumb" aria-hidden="true"><Media src={(variant?.image ?? product.featuredImage)?.url} alt="" ratio="4 / 5" sizes="48px" /></span>
+          <span className="sticky-buy__info">
+            <span className="sticky-buy__title">{product.title}</span>
+            <span className="sticky-buy__price">
+              {hasRealOptions && variant ? `${variant.title} · ` : ""}{formatMoney(variant?.price ?? product.priceRange.minVariantPrice, locale)}
+            </span>
+          </span>
           <button type="button" className="btn btn--solid" disabled={!canBuy} onClick={handleAdd}>
             {adding ? "Adding…" : variant?.availableForSale ? "Add to bag" : "Sold out"}
           </button>
@@ -251,7 +273,9 @@ export function ProductView({ product, variantParam, rating = null }: { product:
       <Dialog open={zoom} onClose={() => setZoom(false)} side="full" label="Image viewer" className="zoom-dialog">
         <div className="zoom" onKeyDown={onKey}>
           <button type="button" className="icon-btn zoom__close" aria-label="Close image viewer" onClick={() => setZoom(false)}><CloseIcon /></button>
-          <Media src={current?.url} alt={current?.altText || product.title} sizes="100vw" fill className="zoom__img" />
+          <PanZoom key={current?.url} label="Product image, pinch or double-tap to zoom">
+            <Media src={current?.url} alt={current?.altText || product.title} sizes="100vw" fill className="zoom__img" />
+          </PanZoom>
           {images.length > 1 && (
             <>
               <button type="button" className="pdp__nav pdp__nav--prev" aria-label="Previous image" onClick={() => go(-1)}><ArrowIcon /></button>

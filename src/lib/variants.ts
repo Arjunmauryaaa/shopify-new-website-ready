@@ -63,3 +63,9 @@ export function colorSummary(product: Pick<ProductCard, "options">): string | nu
   if (!color || color.values.length === 0) return null;
   return color.values.length === 1 ? color.values[0] : `${color.values.length} colours`;
 }
+
+/** Colour dots for listings. Only values the store has given a swatch colour in Shopify are shown; nothing is guessed from names. */
+export function colorSwatches(product: Pick<ProductCard, "options">): { name: string; color: string }[] {
+  const option = product.options.find((o) => isColorOption(o.name));
+  return (option?.optionValues ?? []).flatMap((v) => (v.swatch?.color && /^#[0-9a-f]{3,8}$/i.test(v.swatch.color) ? [{ name: v.name, color: v.swatch.color }] : []));
+}

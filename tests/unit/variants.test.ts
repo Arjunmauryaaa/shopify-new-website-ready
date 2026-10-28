@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { colorSummary, findVariant, galleryImages, initialSelection, optionValueState, resolveSelection } from "@/lib/variants";
+import { colorSummary, colorSwatches, findVariant, galleryImages, initialSelection, optionValueState, resolveSelection } from "@/lib/variants";
 import type { Variant } from "@/lib/shopify/types";
 
 const money = { amount: "10", currencyCode: "INR" };
@@ -48,5 +48,18 @@ describe("gallery & colour summary", () => {
   it("summarises colours from real option data only", () => {
     expect(colorSummary({ options: [{ name: "Colour", values: ["A", "B", "C"] }] })).toBe("3 colours");
     expect(colorSummary({ options: [{ name: "Size", values: ["S"] }] })).toBeNull();
+  });
+});
+
+describe("colorSwatches", () => {
+  it("returns only colours the store defined, and ignores invalid values", () => {
+    const options = [
+      { name: "Size", values: ["S"] },
+      { name: "Color", values: ["Ivory", "Sand", "Odd"], optionValues: [{ name: "Ivory", swatch: { color: "#EFE9DC" } }, { name: "Sand", swatch: null }, { name: "Odd", swatch: { color: "red; background:url(x)" } }] },
+    ];
+    expect(colorSwatches({ options })).toEqual([{ name: "Ivory", color: "#EFE9DC" }]);
+  });
+  it("returns nothing when no swatches are configured", () => {
+    expect(colorSwatches({ options: [{ name: "Color", values: ["Ivory"] }] })).toEqual([]);
   });
 });

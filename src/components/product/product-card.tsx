@@ -4,7 +4,7 @@ import Link from "@/components/ui/link";
 import { useMarket } from "@/providers/market-provider";
 import { Media } from "@/components/ui/media";
 import { productPriceDisplay } from "@/lib/format";
-import { colorSummary } from "@/lib/variants";
+import { colorSummary, colorSwatches } from "@/lib/variants";
 import type { ProductCard as ProductCardData } from "@/lib/shopify/types";
 import { QuickView } from "./quick-view";
 import { WishlistButton } from "./wishlist-button";
@@ -20,6 +20,7 @@ export function ProductCardView({ product, ratio = "4 / 5", sizes = "(min-width:
   const { locale } = useMarket();
   const price = productPriceDisplay(product, locale);
   const colours = colorSummary(product);
+  const swatches = colorSwatches(product);
   const [first, second] = [product.featuredImage ?? product.images.nodes[0], product.images.nodes[1]];
   // Only reveal an alternate when a genuinely different second image exists.
   const alt = second && second.url !== first?.url ? second : null;
@@ -31,7 +32,7 @@ export function ProductCardView({ product, ratio = "4 / 5", sizes = "(min-width:
         <Link href={href} className="pcard__link" data-testid="product-card" tabIndex={-1} aria-hidden="true">
           <Media src={first?.url} alt={first?.altText || product.title} ratio={ratio} sizes={sizes} priority={priority} className="pcard__img" />
           {alt && <Media src={alt.url} alt="" ratio={ratio} sizes={sizes} className="pcard__img pcard__img--alt" />}
-          {!product.availableForSale && <span className="pcard__flag">Sold out</span>}
+          {!product.availableForSale ? <span className="pcard__flag">Sold out</span> : price.compareAt ? <span className="pcard__flag pcard__flag--sale">Sale</span> : null}
         </Link>
         <WishlistButton handle={product.handle} title={product.title} />
         {product.availableForSale && <QuickView handle={product.handle} title={product.title} />}
@@ -42,7 +43,14 @@ export function ProductCardView({ product, ratio = "4 / 5", sizes = "(min-width:
           {price.isRange && <span className="muted">From </span>}
           {price.compareAt && <s className="muted">{price.compareAt}</s>} <span>{price.price}</span>
         </p>
-        {colours && <p className="pcard__colours">{colours}</p>}
+        {swatches.length > 1 ? (
+          <p className="pcard__swatches" aria-label={colours ?? "Colours"}>
+            {swatches.slice(0, 5).map((sw) => <span key={sw.name} className="swatch" style={{ background: sw.color }} title={sw.name} />)}
+            {swatches.length > 5 && <span className="pcard__more">+{swatches.length - 5}</span>}
+          </p>
+        ) : (
+          colours && <p className="pcard__colours">{colours}</p>
+        )}
       </Link>
     </article>
   );

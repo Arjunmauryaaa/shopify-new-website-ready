@@ -1,6 +1,7 @@
 import { ctxOf, marketOrDefault } from "@/config/markets";
 import type { Metadata } from "next";
-import Link from "@/components/ui/link";
+import { EmptyState } from "@/components/ui/empty-state";
+import { brand } from "@/config/brand";
 import { ProductGrid } from "@/components/shop/product-grid";
 import { searchProducts } from "@/lib/shopify/catalog";
 import { pageMetadata } from "@/lib/seo";
@@ -33,10 +34,9 @@ export default async function SearchPage({ params, searchParams }: { params: Pro
 
       {!term && <p className="muted">Enter a term to search the collection.</p>}
       {result && result.products.length === 0 && (
-        <div className="empty">
-          <p>Nothing matched “{term}”. Check the spelling or try a broader term.</p>
-          <Link href="/shop" className="btn btn--outline">Browse all products</Link>
-        </div>
+        <EmptyState title={`Nothing matched “${term}”.`} actions={[{ href: "/shop", label: "Browse all products", primary: true }, ...brand.nav.left.filter((n) => n.href.startsWith("/collections")).slice(0, 2).map((n) => ({ href: n.href, label: n.label }))]}>
+          Check the spelling or try a broader term.
+        </EmptyState>
       )}
       {result && result.products.length > 0 && (
         <ProductGrid key={term} initial={result.products} pageInfo={result.pageInfo} query={`q=${encodeURIComponent(term)}`} />

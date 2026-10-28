@@ -33,7 +33,7 @@ export const PRODUCT_CARD_FRAGMENT = /* GraphQL */ `
     }
     featuredImage { ...ImageFields }
     images(first: 2) { nodes { ...ImageFields } }
-    options { name values }
+    options { name values optionValues { name swatch { color } } }
     variants(first: 1) { nodes { id availableForSale } }
   }
 `;
@@ -48,7 +48,7 @@ export const PRODUCT_FULL_FRAGMENT = /* GraphQL */ `
     descriptionHtml
     seo { title description }
     images(first: 25) { nodes { ...ImageFields } }
-    options { id name values }
+    options { id name values optionValues { name swatch { color } } }
     variants(first: 100) {
       nodes {
         id

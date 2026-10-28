@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "@/components/ui/link";
+import { EmptyState } from "@/components/ui/empty-state";
 import { useEffect, useState } from "react";
 import { ProductCardView } from "@/components/product/product-card";
 import type { ProductCard } from "@/lib/shopify/types";
@@ -38,10 +38,9 @@ export function WishlistView() {
 
   if (ordered.length === 0) {
     return (
-      <div className="empty">
-        <p>You haven’t saved anything yet.</p>
-        <Link href="/shop" className="btn btn--outline">Explore the collection</Link>
-      </div>
+      <EmptyState title="You haven’t saved anything yet." actions={[{ href: "/shop", label: "Explore the collection", primary: true }]}>
+        Tap the heart on any piece to keep it here.
+      </EmptyState>
     );
   }
   return (
