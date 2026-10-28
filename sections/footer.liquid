@@ -1,10 +1,10 @@
-<footer class="site-footer">
+﻿<footer class="site-footer">
   <div class="footer-top">
     <a class="wordmark" href="{{ routes.root_url }}">{{ shop.name }}</a>
     <div class="footer-links">{% for link in section.settings.menu.links %}<a href="{{ link.url }}">{{ link.title }}</a>{% endfor %}</div>
     {% if section.settings.note != blank %}<p class="muted">{{ section.settings.note }}</p>{% endif %}
   </div>
-  <div class="footer-bottom"><span>© {{ 'now' | date: '%Y' }} {{ shop.name }}</span><span>{{ shop.currency }}</span></div>
+  <div class="footer-bottom"><span>&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}</span><span>{{ shop.currency }}</span></div>
 </footer>
 {% schema %}
 {"name":"Footer","settings":[{"type":"link_list","id":"menu","label":"Menu","default":"footer"},{"type":"text","id":"note","label":"Short note","default":"Thoughtfully chosen. Made to be lived in."}]}
