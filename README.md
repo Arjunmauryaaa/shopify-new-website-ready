@@ -1,5 +1,7 @@
 # Headless luxury storefront (Next.js + Shopify Storefront API)
 
+This repository also includes a native Shopify Online Store theme at its root (`layout/`, `sections/`, `snippets/`, `templates/`, `assets/`, and `config/`). Use Shopify's **Connect from GitHub** flow to add that theme to the store. The `src/` Next.js storefront remains available for a separately hosted headless storefront.
+
 Editorial, image-led storefront. Shopify is the source of truth for products, prices, variants, availability, cart and
 checkout. Payments run through Shopify checkout with Razorpay enabled in Shopify — see [docs/PAYMENTS.md](docs/PAYMENTS.md).
 
@@ -12,6 +14,10 @@ npm run dev                  # http://localhost:3000
 npm run verify               # lint + typecheck + unit tests + production build
 npm run test:e2e             # Playwright (builds, starts a local mock of the Storefront API)
 ```
+
+## Put the theme on the Shopify store URL
+
+The Shopify theme is the version that renders on the store's Shopify URL. After the theme files are pushed to the connected GitHub branch, go to **Online Store → Themes → Add theme → Connect from GitHub**, select this repository and branch, then use **Preview** and **Publish** from the theme card. Publishing is the step that makes the theme the live storefront. Theme images, menus, and text can be adjusted in **Customize**; product, collection, page, and checkout data come from Shopify.
 
 Without Shopify credentials the site still renders (empty states, labelled image placeholders); cart returns 503.
 

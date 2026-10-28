@@ -1,0 +1,12 @@
+<section class="product-detail page-wrap">
+  <div class="product-gallery">{% for media in product.media %}{% if media.media_type == 'image' %}{{ media | image_url: width: 1400 | image_tag: widths: '500, 800, 1100, 1400', sizes: '(min-width: 900px) 50vw, 100vw', loading: 'lazy', alt: media.alt | default: product.title }}{% endif %}{% endfor %}</div>
+  <div class="product-info">
+    {% if product.vendor != blank %}<p class="eyebrow">{{ product.vendor | escape }}</p>{% endif %}<h1>{{ product.title | escape }}</h1><p class="price">{{ product.selected_or_first_available_variant.price | money }}</p>
+    {% form 'product', product, class: 'product-form' %}
+      {% if product.has_only_default_variant %}<input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">{% else %}<label for="VariantSelect">Choose an option</label><select id="VariantSelect" name="id">{% for variant in product.variants %}<option value="{{ variant.id }}"{% if variant == product.selected_or_first_available_variant %} selected{% endif %}{% unless variant.available %} disabled{% endunless %}>{{ variant.title }} — {{ variant.price | money }}{% unless variant.available %} — Sold out{% endunless %}</option>{% endfor %}</select>{% endif %}
+      <label for="Quantity">Quantity</label><input id="Quantity" type="number" name="quantity" value="1" min="1"><button class="button button-dark" type="submit" name="add"{% unless product.selected_or_first_available_variant.available %} disabled{% endunless %}>{% if product.selected_or_first_available_variant.available %}Add to bag{% else %}Sold out{% endif %}</button>
+    {% endform %}
+    {% if product.description != blank %}<div class="rte product-description">{{ product.description }}</div>{% endif %}
+  </div>
+</section>
+{% schema %}{"name":"Product details","settings":[]}{% endschema %}

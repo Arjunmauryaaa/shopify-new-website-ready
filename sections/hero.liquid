@@ -1,0 +1,19 @@
+<section class="hero-section">
+  {% assign hero_product = section.settings.product | default: collections.all.products.first %}
+  {% if section.settings.image != blank %}
+    {{ section.settings.image | image_url: width: 2400 | image_tag: class: 'hero-image', widths: '900, 1400, 1800, 2400', sizes: '100vw', loading: 'eager' }}
+  {% elsif hero_product.featured_image != blank %}
+    {{ hero_product.featured_image | image_url: width: 2400 | image_tag: class: 'hero-image', widths: '900, 1400, 1800, 2400', sizes: '100vw', loading: 'eager', alt: hero_product.title }}
+  {% else %}
+    <div class="hero-placeholder" aria-hidden="true"></div>
+  {% endif %}
+  <div class="hero-copy">
+    {% if section.settings.eyebrow != blank %}<p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>{% endif %}
+    <h1>{{ section.settings.heading | escape }}</h1>
+    {% if section.settings.body != blank %}<p>{{ section.settings.body | escape }}</p>{% endif %}
+    {% if section.settings.button_label != blank %}<a class="button button-light" href="{{ section.settings.button_link | default: hero_product.url | default: routes.all_products_collection_url }}">{{ section.settings.button_label | escape }}</a>{% endif %}
+  </div>
+</section>
+{% schema %}
+{"name":"Editorial hero","settings":[{"type":"image_picker","id":"image","label":"Image"},{"type":"product","id":"product","label":"Fallback product image and link"},{"type":"text","id":"eyebrow","label":"Eyebrow","default":"The collection"},{"type":"text","id":"heading","label":"Heading","default":"Considered pieces for everyday life."},{"type":"textarea","id":"body","label":"Text","default":"Discover a thoughtful collection, selected with care."},{"type":"text","id":"button_label","label":"Button label","default":"Shop the collection"},{"type":"url","id":"button_link","label":"Button link"}]}
+{% endschema %}

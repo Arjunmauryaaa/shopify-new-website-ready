@@ -1,0 +1,17 @@
+<header class="site-header">
+  <div class="header-inner">
+    <nav class="desktop-nav" aria-label="Main menu">
+      {% for link in section.settings.menu.links %}<a href="{{ link.url }}">{{ link.title }}</a>{% endfor %}
+    </nav>
+    <a class="wordmark" href="{{ routes.root_url }}" aria-label="{{ shop.name | escape }} home">
+      {% if settings.logo != blank %}{{ settings.logo | image_url: width: 420 | image_tag: class: 'logo', alt: shop.name }}{% else %}{{ shop.name }}{% endif %}
+    </a>
+    <nav class="header-actions" aria-label="Store tools">
+      <a href="{{ routes.search_url }}">Search</a>
+      <a href="{{ routes.cart_url }}">Bag <span>({{ cart.item_count }})</span></a>
+    </nav>
+  </div>
+</header>
+{% schema %}
+{"name":"Header","settings":[{"type":"link_list","id":"menu","label":"Menu","default":"main-menu"}]}
+{% endschema %}
