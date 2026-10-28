@@ -1,0 +1,8 @@
+{% assign short_title = product.metafields.custom.short_title.value %}
+{% if short_title == blank %}
+  {% assign short_title = product.title | split: ' Newborn' | first %}
+  {% if short_title == product.title %}
+    {% assign title_words = product.title | split: ' ' %}
+    {% assign short_title = title_words | slice: 0, 8 | join: ' ' %}
+  {% endif %}
+{% endif %}{{ short_title | escape }}

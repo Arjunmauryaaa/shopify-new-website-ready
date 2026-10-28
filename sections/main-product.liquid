@@ -1,12 +1,32 @@
-<section class="product-detail page-wrap">
-  <div class="product-gallery">{% for media in product.media %}{% if media.media_type == 'image' %}{{ media | image_url: width: 1400 | image_tag: widths: '500, 800, 1100, 1400', sizes: '(min-width: 900px) 50vw, 100vw', loading: 'lazy', alt: media.alt | default: product.title }}{% endif %}{% endfor %}</div>
+﻿{% assign short_title = product.metafields.custom.short_title.value %}
+{% if short_title == blank %}{% assign short_title = product.title | split: ' Newborn' | first %}{% if short_title == product.title %}{% assign title_words = product.title | split: ' ' %}{% assign short_title = title_words | slice: 0, 8 | join: ' ' %}{% endif %}{% endif %}
+<section class="product-detail page-wrap product-page">
+  <div class="product-gallery" aria-label="{{ short_title | escape }} photos">
+    {% for media in product.media %}
+      {% case media.media_type %}
+        {% when 'image' %}{{ media | image_url: width: 1800 | image_tag: widths: '500, 800, 1200, 1600, 1800', sizes: '(min-width: 900px) 58vw, 100vw', loading: 'lazy', alt: media.alt | default: short_title }}
+        {% when 'video' %}{{ media | video_tag: controls: true, playsinline: true, preload: 'metadata' }}
+        {% when 'external_video' %}{{ media | external_video_tag }}
+      {% endcase %}
+    {% endfor %}
+  </div>
   <div class="product-info">
-    {% if product.vendor != blank %}<p class="eyebrow">{{ product.vendor | escape }}</p>{% endif %}<h1>{{ product.title | escape }}</h1><p class="price">{{ product.selected_or_first_available_variant.price | money }}</p>
-    {% form 'product', product, class: 'product-form' %}
-      {% if product.has_only_default_variant %}<input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">{% else %}<label for="VariantSelect">Choose an option</label><select id="VariantSelect" name="id">{% for variant in product.variants %}<option value="{{ variant.id }}"{% if variant == product.selected_or_first_available_variant %} selected{% endif %}{% unless variant.available %} disabled{% endunless %}>{{ variant.title }} — {{ variant.price | money }}{% unless variant.available %} — Sold out{% endunless %}</option>{% endfor %}</select>{% endif %}
-      <label for="Quantity">Quantity</label><input id="Quantity" type="number" name="quantity" value="1" min="1"><button class="button button-dark" type="submit" name="add"{% unless product.selected_or_first_available_variant.available %} disabled{% endunless %}>{% if product.selected_or_first_available_variant.available %}Add to bag{% else %}Sold out{% endif %}</button>
+    {% if product.vendor != blank %}<p class="eyebrow">{{ product.vendor | escape }}</p>{% endif %}
+    <h1>{{ short_title | escape }}</h1>
+    <p class="price"><span data-product-price>{{ product.selected_or_first_available_variant.price | money }}</span></p>
+    {% form 'product', product, class: 'product-form', id: 'ProductForm' %}
+      {% if product.has_only_default_variant %}<input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}" data-variant-id>
+      {% else %}<label for="VariantSelect-{{ section.id }}">Select colour / finish</label><select id="VariantSelect-{{ section.id }}" name="id" data-variant-select>{% for variant in product.variants %}<option value="{{ variant.id }}" data-price="{{ variant.price | money | escape }}" data-available="{{ variant.available }}"{% if variant == product.selected_or_first_available_variant %} selected{% endif %}{% unless variant.available %} disabled{% endunless %}>{{ variant.title | escape }}{% unless variant.available %} - Sold out{% endunless %}</option>{% endfor %}</select>{% endif %}
+      <label for="Quantity-{{ section.id }}">Quantity</label><input id="Quantity-{{ section.id }}" type="number" name="quantity" value="1" min="1" inputmode="numeric">
+      <div class="product-purchase-actions"><button class="button button-dark" type="submit" name="add" data-add-button{% unless product.selected_or_first_available_variant.available %} disabled{% endunless %}>{% if product.selected_or_first_available_variant.available %}Add to bag{% else %}Sold out{% endif %}</button>{% if section.settings.show_express_checkout %}<div class="product-express">{{ form | payment_button }}</div>{% endif %}</div>
     {% endform %}
-    {% if product.description != blank %}<div class="rte product-description">{{ product.description }}</div>{% endif %}
+    <div class="product-promise"><span>Checkout powered by Shopify</span><span>Shipping options shown at checkout</span></div>
+    <div class="product-accordions">
+      {% if product.description != blank %}<details><summary>Details &amp; care</summary><div class="product-accordion-content rte">{{ product.description }}</div></details>{% endif %}
+      <details><summary>Shipping &amp; returns</summary><div class="product-accordion-content">Review the <a href="/policies/shipping-policy">shipping policy</a> and <a href="/policies/refund-policy">refund policy</a> before ordering.</div></details>
+    </div>
+    <p class="product-payment-note">Fast payment options appear when enabled in your Shopify payment settings.</p>
   </div>
 </section>
-{% schema %}{"name":"Product details","settings":[]}{% endschema %}
+{% schema %}{"name":"Product details","settings":[{"type":"checkbox","id":"show_express_checkout","label":"Show accelerated checkout button","default":true}]}
+{% endschema %}

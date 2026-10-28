@@ -1,16 +1,19 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="{{ request.locale.iso_code }}">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="theme-color" content="{{ settings.background }}">
+    <script>try{if(localStorage.getItem('arjunta-theme')==='dark'){document.documentElement.dataset.theme='dark';document.querySelector('meta[name="theme-color"]').content='#141413'}}catch(e){}</script>
     <link rel="canonical" href="{{ canonical_url }}">
-    <title>{{ page_title }}{% if current_tags %} — {{ current_tags | join: ', ' }}{% endif %}{% unless page_title contains shop.name %} — {{ shop.name }}{% endunless %}</title>
+    <title>{{ page_title }}{% if current_tags %} - {{ current_tags | join: ', ' }}{% endif %}{% unless page_title contains shop.name %} - {{ shop.name }}{% endunless %}</title>
     {% if page_description != blank %}<meta name="description" content="{{ page_description | escape }}">{% endif %}
     {{ content_for_header }}
     {{ 'theme.css' | asset_url | stylesheet_tag }}
     {{ 'home.css' | asset_url | stylesheet_tag }}
     {{ 'media.css' | asset_url | stylesheet_tag }}
+    {{ 'theme-mode.css' | asset_url | stylesheet_tag }}
+    <script src="{{ 'theme.js' | asset_url }}" defer></script>
     <style>:root{--bg:{{ settings.background }};--text:{{ settings.text }};--muted:{{ settings.muted }};--line:{{ settings.line }}}</style>
   </head>
   <body class="template-{{ template.name }}">
