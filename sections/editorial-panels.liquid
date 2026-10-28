@@ -1,7 +1,7 @@
 <section class="editorial-panels">
   {% for i in (1..2) %}{% capture image_key %}image_{{ i }}{% endcapture %}{% capture title_key %}title_{{ i }}{% endcapture %}{% capture eyebrow_key %}eyebrow_{{ i }}{% endcapture %}{% capture link_key %}link_{{ i }}{% endcapture %}{% assign image = section.settings[image_key] %}{% assign title = section.settings[title_key] %}{% assign eyebrow = section.settings[eyebrow_key] %}{% assign link = section.settings[link_key] %}
   <a class="editorial-panel editorial-panel--{{ i }}" href="{{ link | default: routes.all_products_collection_url }}">
-    {% if image != blank %}{{ image | image_url: width: 1200 | image_tag: class: 'editorial-panel__image', widths: '500, 800, 1200', sizes: '(min-width: 900px) 48vw, 100vw', loading: 'lazy' }}{% else %}<span class="campaign-placeholder">{{ title | escape }}</span>{% endif %}
+    {% if image != blank %}{{ image | image_url: width: 1200 | image_tag: class: 'editorial-panel__image', widths: '500, 800, 1200', sizes: '(min-width: 900px) 48vw, 100vw', loading: 'lazy' }}{% elsif i == 1 %}<img class="editorial-panel__image" src="{{ 'campaign-baby-clothes-flatlay.jpeg' | asset_url }}" alt="Neutral baby clothes arranged in a soft textile flat lay" loading="lazy">{% else %}<img class="editorial-panel__image" src="{{ 'campaign-baby-clothes-rack.jpeg' | asset_url }}" alt="Baby clothing displayed on a wooden rail in a softly lit nursery" loading="lazy">{% endif %}
     <span class="editorial-panel__caption"><span class="eyebrow">{{ eyebrow | escape }}</span><span>{{ title | escape }}</span></span>
   </a>{% endfor %}
 </section>
