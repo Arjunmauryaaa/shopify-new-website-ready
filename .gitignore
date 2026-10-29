@@ -50,3 +50,10 @@ test-results
 # playwright
 /test-results/
 /playwright-report/
+
+# agency site (separate app in ./agency)
+/agency/node_modules
+/agency/.next/
+/agency/test-results/
+/agency/playwright-report/
+/agency/*.tsbuildinfo
