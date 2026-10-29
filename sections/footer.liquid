@@ -1,11 +1,79 @@
-﻿<footer class="site-footer">
-  <div class="footer-top">
-    <a class="wordmark" href="{{ routes.root_url }}">{{ shop.name }}</a>
-    <div class="footer-links">{% for link in section.settings.menu.links %}<a href="{{ link.url }}">{{ link.title }}</a>{% endfor %}</div>
-    {% if section.settings.note != blank %}<p class="muted">{{ section.settings.note }}</p>{% endif %}
+<footer class="site-footer">
+  {% assign storefront_name = settings.site_name | default: shop.name %}
+  <div class="footer-main">
+    <div class="footer-brand">
+      <a class="wordmark" href="{{ routes.root_url }}">{{ storefront_name | escape }}</a>
+      {% if section.settings.note != blank %}<p class="muted">{{ section.settings.note | escape }}</p>{% endif %}
+    </div>
+
+    {% if section.settings.shop_menu != blank and section.settings.shop_menu.links.size > 0 %}
+      <nav class="footer-column" aria-label="{{ section.settings.shop_heading | escape }}">
+        <h2>{{ section.settings.shop_heading | escape }}</h2>
+        <ul>{% for link in section.settings.shop_menu.links %}<li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>{% endfor %}</ul>
+      </nav>
+    {% endif %}
+
+    {% if section.settings.help_menu != blank and section.settings.help_menu.links.size > 0 %}
+      <nav class="footer-column" aria-label="{{ section.settings.help_heading | escape }}">
+        <h2>{{ section.settings.help_heading | escape }}</h2>
+        <ul>{% for link in section.settings.help_menu.links %}<li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>{% endfor %}</ul>
+      </nav>
+    {% endif %}
+
+    {% if section.settings.newsletter_enable %}
+      <div class="footer-newsletter">
+        <h2>{{ section.settings.newsletter_heading | escape }}</h2>
+        {% form 'customer', class: 'footer-newsletter__form' %}
+          <input type="hidden" name="contact[tags]" value="newsletter">
+          <label class="visually-hidden" for="FooterEmail-{{ section.id }}">Email address</label>
+          <div class="footer-newsletter__field">
+            <input id="FooterEmail-{{ section.id }}" type="email" name="contact[email]" value="{{ form.email }}" autocomplete="email" autocorrect="off" autocapitalize="off" placeholder="Your email address" required>
+            <button type="submit" aria-label="Subscribe to the newsletter">Sign up</button>
+          </div>
+          {% if form.posted_successfully? %}<p role="status">Thanks for subscribing.</p>{% endif %}
+          {% if form.errors %}<p role="alert">{{ form.errors | default_errors }}</p>{% endif %}
+        {% endform %}
+      </div>
+    {% endif %}
   </div>
-  <div class="footer-bottom"><span>&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}</span><span>{{ shop.currency }}</span></div>
+
+  <div class="footer-bottom">
+    <span>&copy; {{ 'now' | date: '%Y' }} {{ storefront_name | escape }}</span>
+    {% if section.settings.show_policies and shop.policies.size > 0 %}
+      <nav class="footer-policies" aria-label="Policies">
+        {% for policy in shop.policies %}{% if policy != blank %}<a href="{{ policy.url }}">{{ policy.title | escape }}</a>{% endif %}{% endfor %}
+      </nav>
+    {% endif %}
+    {% if section.settings.show_country_selector and localization.available_countries.size > 1 %}
+      {% form 'localization', class: 'footer-localization' %}
+        <label for="FooterCountry-{{ section.id }}">Country / currency</label>
+        <select id="FooterCountry-{{ section.id }}" name="country_code" onchange="this.form.submit()">
+          {% for country in localization.available_countries %}<option value="{{ country.iso_code }}"{% if country.iso_code == localization.country.iso_code %} selected{% endif %}>{{ country.name | escape }} ({{ country.currency.iso_code }} {{ country.currency.symbol }})</option>{% endfor %}
+        </select>
+      {% endform %}
+    {% endif %}
+    {% if section.settings.show_payments and shop.enabled_payment_types.size > 0 %}
+      <ul class="footer-payments" aria-label="Accepted payment methods" role="list">
+        {% for type in shop.enabled_payment_types %}<li>{{ type | payment_type_svg_tag }}</li>{% endfor %}
+      </ul>
+    {% endif %}
+  </div>
 </footer>
+
 {% schema %}
-{"name":"Footer","settings":[{"type":"link_list","id":"menu","label":"Menu","default":"footer"},{"type":"text","id":"note","label":"Short note","default":"Thoughtfully chosen. Made to be lived in."}]}
+{
+  "name": "Footer",
+  "settings": [
+    { "type": "text", "id": "note", "label": "Brand note", "default": "Thoughtfully chosen. Made to be lived in." },
+    { "type": "text", "id": "shop_heading", "label": "Shop links heading", "default": "Shop" },
+    { "type": "link_list", "id": "shop_menu", "label": "Shop links", "default": "main-menu" },
+    { "type": "text", "id": "help_heading", "label": "Help links heading", "default": "Customer care" },
+    { "type": "link_list", "id": "help_menu", "label": "Customer care links", "default": "footer" },
+    { "type": "checkbox", "id": "newsletter_enable", "label": "Show newsletter signup", "default": true },
+    { "type": "text", "id": "newsletter_heading", "label": "Newsletter heading", "default": "Stay in the know" },
+    { "type": "checkbox", "id": "show_policies", "label": "Show store policies", "default": true },
+    { "type": "checkbox", "id": "show_country_selector", "label": "Show country and currency selector", "default": true },
+    { "type": "checkbox", "id": "show_payments", "label": "Show accepted payment methods", "default": true }
+  ]
+}
 {% endschema %}

@@ -9,6 +9,7 @@
  */
 {
   "current": {
+    "site_name": "East Side",
     "background": "#ffffff",
     "text": "#171715",
     "muted": "#686661",
@@ -16,6 +17,7 @@
   },
   "presets": {
     "Default": {
+      "site_name": "East Side",
       "background": "#ffffff",
       "text": "#171715",
       "muted": "#686661",

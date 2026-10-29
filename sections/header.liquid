@@ -4,8 +4,9 @@
       {% for link in section.settings.menu.links %}<a href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{{ link.title }}</a>{% endfor %}
     </nav>
     <details class="mobile-menu"><summary>Menu</summary><nav aria-label="Mobile menu">{% for link in section.settings.menu.links %}<a href="{{ link.url }}">{{ link.title }}</a>{% endfor %}{% for link in section.settings.menu_right.links %}<a href="{{ link.url }}">{{ link.title }}</a>{% endfor %}<a href="{{ routes.account_url }}">Account</a></nav></details>
-    <a class="wordmark" href="{{ routes.root_url }}" aria-label="{{ shop.name | escape }} home">
-      {% if settings.logo != blank %}{{ settings.logo | image_url: width: 420 | image_tag: class: 'logo', alt: shop.name }}{% else %}{{ shop.name }}{% endif %}
+    {% assign storefront_name = settings.site_name | default: shop.name %}
+    <a class="wordmark" href="{{ routes.root_url }}" aria-label="{{ storefront_name | escape }} home">
+      {% if settings.logo != blank %}{{ settings.logo | image_url: width: 420 | image_tag: class: 'logo', alt: storefront_name }}{% else %}{{ storefront_name }}{% endif %}
     </a>
     <div class="header-tools">
       <nav class="desktop-nav desktop-nav--right" aria-label="About menu">{% for link in section.settings.menu_right.links %}<a href="{{ link.url }}">{{ link.title }}</a>{% endfor %}</nav>

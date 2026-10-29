@@ -11,6 +11,12 @@
     "name": "Theme settings",
     "settings": [
       {
+        "type": "text",
+        "id": "site_name",
+        "label": "Storefront name",
+        "default": "East Side"
+      },
+      {
         "type": "color",
         "id": "background",
         "label": "Background",
