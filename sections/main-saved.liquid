@@ -1,0 +1,11 @@
+{%- comment -%} Saved items live in the visitor's own browser (localStorage); nothing is sent to the store. {%- endcomment -%}
+<section class="page-wrap">
+  <header class="page-heading"><p class="eyebrow">Your favourites</p><h1>Saved</h1></header>
+  <div class="product-grid" data-saved-grid></div>
+  <div class="empty-note" data-saved-empty hidden>
+    <p>You haven&rsquo;t saved anything yet. Tap the heart on any piece to keep it here.</p>
+    <a class="text-link" href="{{ routes.all_products_collection_url }}">Explore the collection</a>
+  </div>
+  <noscript><p class="empty-note">Saved items need JavaScript to be enabled.</p></noscript>
+</section>
+{% schema %}{"name":"Saved items","settings":[]}{% endschema %}

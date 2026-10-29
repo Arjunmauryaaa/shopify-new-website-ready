@@ -40,5 +40,30 @@
         "label": "Logo image"
       }
     ]
+  },
+  {
+    "name": "Store features",
+    "settings": [
+      {
+        "type": "number",
+        "id": "free_shipping_threshold",
+        "label": "Free shipping threshold",
+        "info": "In your store currency, whole units (for example 2000). Leave 0 to hide the progress bar. Only shown when the shopper sees your store currency, and it must match a real shipping rate you set up.",
+        "default": 0
+      },
+      {
+        "type": "checkbox",
+        "id": "show_gift_message",
+        "label": "Offer a gift message in the bag",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "delivery_note",
+        "label": "Delivery note on product pages",
+        "info": "Only state delivery times you can honour.",
+        "default": ""
+      }
+    ]
   }
 ]

@@ -1,7 +1,7 @@
-﻿<header class="site-header">
+<header class="site-header">
   <div class="header-inner">
     <nav class="desktop-nav" aria-label="Main menu">
-      {% for link in section.settings.menu.links %}<a href="{{ link.url }}">{{ link.title }}</a>{% endfor %}
+      {% for link in section.settings.menu.links %}<a href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{{ link.title }}</a>{% endfor %}
     </nav>
     <details class="mobile-menu"><summary>Menu</summary><nav aria-label="Mobile menu">{% for link in section.settings.menu.links %}<a href="{{ link.url }}">{{ link.title }}</a>{% endfor %}{% for link in section.settings.menu_right.links %}<a href="{{ link.url }}">{{ link.title }}</a>{% endfor %}<a href="{{ routes.account_url }}">Account</a></nav></details>
     <a class="wordmark" href="{{ routes.root_url }}" aria-label="{{ shop.name | escape }} home">
@@ -11,7 +11,7 @@
       <nav class="desktop-nav desktop-nav--right" aria-label="About menu">{% for link in section.settings.menu_right.links %}<a href="{{ link.url }}">{{ link.title }}</a>{% endfor %}</nav>
       <nav class="header-actions" aria-label="Store tools">
         {% if section.settings.show_country_selector and localization.available_countries.size > 1 %}{% form 'localization', class: 'country-selector' %}<label class="visually-hidden" for="Country-{{ section.id }}">Country and currency</label><select id="Country-{{ section.id }}" name="country_code" onchange="this.form.submit()">{% for country in localization.available_countries %}<option value="{{ country.iso_code }}"{% if country.iso_code == localization.country.iso_code %} selected{% endif %}>{{ country.name }} | {{ country.currency.iso_code }}</option>{% endfor %}</select>{% endform %}{% endif %}
-        <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode"><span aria-hidden="true">◐</span><span data-theme-label>Dark mode</span></button><a class="account-link" href="{{ routes.account_url }}">Account</a><a href="{{ routes.search_url }}">Search</a><a href="{{ routes.cart_url }}">Bag <span>({{ cart.item_count }})</span></a>
+        <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode"><span aria-hidden="true">◐</span><span data-theme-label>Dark mode</span></button><a class="account-link" href="{{ routes.account_url }}">Account</a><a href="{{ routes.search_url }}" data-search-open aria-haspopup="dialog">Search</a><a href="{{ routes.cart_url }}" data-cart-open aria-haspopup="dialog">Bag <span data-cart-count>({{ cart.item_count }})</span></a>
       </nav>
     </div>
   </div>

@@ -2,18 +2,37 @@
 <html lang="{{ request.locale.iso_code }}">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
     <meta name="theme-color" content="{{ settings.background }}">
     <script>try{if(localStorage.getItem('arjunta-theme')==='dark'){document.documentElement.dataset.theme='dark';document.querySelector('meta[name="theme-color"]').content='#141413'}}catch(e){}</script>
     <link rel="canonical" href="{{ canonical_url }}">
     <title>{{ page_title }}{% if current_tags %} - {{ current_tags | join: ', ' }}{% endif %}{% unless page_title contains shop.name %} - {{ shop.name }}{% endunless %}</title>
     {% if page_description != blank %}<meta name="description" content="{{ page_description | escape }}">{% endif %}
+    {% render 'seo-meta' %}
     {{ content_for_header }}
     {{ 'theme.css' | asset_url | stylesheet_tag }}
     {{ 'home.css' | asset_url | stylesheet_tag }}
     {{ 'media.css' | asset_url | stylesheet_tag }}
     {{ 'theme-mode.css' | asset_url | stylesheet_tag }}
+    {{ 'enhance.css' | asset_url | stylesheet_tag }}
+    <script>
+      window.themeConfig = {
+        currency: {{ cart.currency.iso_code | json }},
+        locale: {{ request.locale.iso_code | json }},
+        routes: {
+          root: {{ routes.root_url | json }},
+          cart: {{ routes.cart_url | json }},
+          cartAdd: {{ routes.cart_add_url | json }},
+          cartChange: {{ routes.cart_change_url | json }},
+          cartUpdate: {{ routes.cart_update_url | json }},
+          search: {{ routes.search_url | json }},
+          suggest: {{ routes.predictive_search_url | json }},
+          recommendations: {{ routes.product_recommendations_url | json }}
+        }
+      };
+    </script>
     <script src="{{ 'theme.js' | asset_url }}" defer></script>
+    <script src="{{ 'enhance.js' | asset_url }}" defer></script>
     <style>:root{--bg:{{ settings.background }};--text:{{ settings.text }};--muted:{{ settings.muted }};--line:{{ settings.line }}}</style>
   </head>
   <body class="template-{{ template.name }}">
@@ -21,5 +40,9 @@
     {% sections 'header-group' %}
     <main id="MainContent" role="main">{{ content_for_layout }}</main>
     {% sections 'footer-group' %}
+    {% section 'cart-drawer' %}
+    {% render 'search-dialog' %}
+    {% render 'bottom-nav' %}
+    <div class="visually-hidden" role="status" aria-live="polite" data-announce></div>
   </body>
 </html>

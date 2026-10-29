@@ -1,8 +1,62 @@
 <section class="page-wrap">
   <header class="page-heading"><p class="eyebrow">The collection</p><h1>{{ collection.title | escape }}</h1>{% if collection.description != blank %}<div class="rte">{{ collection.description }}</div>{% endif %}</header>
   {% paginate collection.products by 16 %}
-    <div class="collection-toolbar"><span>{{ collection.products_count }} pieces</span><form method="get"><label for="SortBy">Sort by</label><select id="SortBy" name="sort_by" onchange="this.form.submit()">{% assign sort_by = collection.sort_by | default: collection.default_sort_by %}{% for option in collection.sort_options %}<option value="{{ option.value }}"{% if option.value == sort_by %} selected{% endif %}>{{ option.name }}</option>{% endfor %}</select></form></div>
-    {% if collection.products.size > 0 %}<div class="product-grid">{% for product in collection.products %}{% render 'product-card', product: product %}{% endfor %}</div>{% else %}<p class="empty-note">There are no products in this collection yet.</p>{% endif %}
+    {%- assign active_count = 0 -%}
+    {%- for filter in collection.filters -%}{%- if filter.type == 'price_range' -%}{%- if filter.min_value.value != nil or filter.max_value.value != nil -%}{%- assign active_count = active_count | plus: 1 -%}{%- endif -%}{%- else -%}{%- assign active_count = active_count | plus: filter.active_values.size -%}{%- endif -%}{%- endfor -%}
+
+    <form class="collection-controls" method="get" action="{{ collection.url }}" data-filter-form>
+      <div class="collection-toolbar">
+        {%- if collection.filters.size > 0 -%}<span class="filter-count">{{ collection.products_count }} {% if collection.products_count == 1 %}piece{% else %}pieces{% endif %}</span>{%- else -%}<span>{{ collection.products_count }} pieces</span>{%- endif -%}
+        <div class="collection-toolbar__sort"><label for="SortBy">Sort by</label>
+          <select id="SortBy" name="sort_by" data-auto-submit>{% assign sort_by = collection.sort_by | default: collection.default_sort_by %}{% for option in collection.sort_options %}<option value="{{ option.value }}"{% if option.value == sort_by %} selected{% endif %}>{{ option.name }}</option>{% endfor %}</select>
+        </div>
+      </div>
+
+      {%- if collection.filters.size > 0 -%}
+        <details class="filters"{% if active_count > 0 %} open{% endif %}>
+          <summary>Filter{% if active_count > 0 %} <span class="filters__n">{{ active_count }}</span>{% endif %}</summary>
+          <div class="filters__groups">
+            {%- for filter in collection.filters -%}
+              <fieldset class="filter-group">
+                <legend class="eyebrow">{{ filter.label | escape }}</legend>
+                {%- case filter.type -%}
+                  {%- when 'price_range' -%}
+                    <div class="filter-price">
+                      <label><span class="visually-hidden">Minimum price</span><input type="number" name="{{ filter.min_value.param_name }}" inputmode="decimal" min="0" placeholder="From" value="{% if filter.min_value.value %}{{ filter.min_value.value | money_without_currency | replace: ',', '' }}{% endif %}" data-auto-submit="slow"></label>
+                      <span aria-hidden="true">&ndash;</span>
+                      <label><span class="visually-hidden">Maximum price</span><input type="number" name="{{ filter.max_value.param_name }}" inputmode="decimal" min="0" placeholder="To {{ filter.range_max | money_without_currency | replace: ',', '' }}" value="{% if filter.max_value.value %}{{ filter.max_value.value | money_without_currency | replace: ',', '' }}{% endif %}" data-auto-submit="slow"></label>
+                    </div>
+                  {%- else -%}
+                    <ul class="filter-list">
+                      {%- for value in filter.values -%}
+                        <li><label class="check"><input type="checkbox" name="{{ value.param_name }}" value="{{ value.value }}"{% if value.active %} checked{% endif %}{% if value.count == 0 and value.active == false %} disabled{% endif %} data-auto-submit> <span>{{ value.label | escape }}</span> <span class="muted">({{ value.count }})</span></label></li>
+                      {%- endfor -%}
+                    </ul>
+                {%- endcase -%}
+              </fieldset>
+            {%- endfor -%}
+            <noscript><button class="button button-dark" type="submit">Apply filters</button></noscript>
+          </div>
+        </details>
+
+        {%- if active_count > 0 -%}
+          <ul class="chips" aria-label="Active filters">
+            {%- for filter in collection.filters -%}
+              {%- if filter.type == 'price_range' -%}
+                {%- if filter.min_value.value != nil or filter.max_value.value != nil -%}<li><a class="chip" href="{{ filter.url_to_remove }}">{{ filter.label | escape }}: {{ filter.min_value.value | default: 0 | money }} &ndash; {% if filter.max_value.value %}{{ filter.max_value.value | money }}{% else %}{{ filter.range_max | money }}{% endif %} <span aria-hidden="true">&times;</span><span class="visually-hidden"> remove filter</span></a></li>{%- endif -%}
+              {%- else -%}
+                {%- for value in filter.active_values -%}<li><a class="chip" href="{{ value.url_to_remove }}">{{ value.label | escape }} <span aria-hidden="true">&times;</span><span class="visually-hidden"> remove filter</span></a></li>{%- endfor -%}
+              {%- endif -%}
+            {%- endfor -%}
+            <li><a class="text-btn" href="{{ collection.url }}">Clear all</a></li>
+          </ul>
+        {%- endif -%}
+      {%- endif -%}
+    </form>
+
+    {% if collection.products.size > 0 %}<div class="product-grid">{% for product in collection.products %}{% render 'product-card', product: product %}{% endfor %}</div>
+    {% elsif active_count > 0 %}<div class="empty-note"><p>No pieces match those filters.</p><a class="text-link" href="{{ collection.url }}">Clear all filters</a></div>
+    {% else %}<p class="empty-note">There are no products in this collection yet.</p>{% endif %}
     {% if paginate.pages > 1 %}<nav class="pagination" aria-label="Pagination">{{ paginate | default_pagination }}</nav>{% endif %}
   {% endpaginate %}
 </section>

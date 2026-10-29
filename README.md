@@ -104,3 +104,34 @@ Home 85 · Product 82 · Collection 83 performance; accessibility 98–100; best
 `npm run demo` (dev) or `npm run demo -- --prod` starts a local stand-in for the Shopify Storefront API with a complete **sample** catalogue (12 products, 108 variants, 9 collections, 3 journal stories, policy pages) plus the homepage content in `src/config/demo.ts`, and shows a "Demo storefront" bar. The artwork is generated in code (`demo/art.mjs` → `public/demo/*.jpg`; regenerate with `npm run demo:assets`) — original illustrations, not photography. Nothing here is real inventory, policy text or brand content.
 
 To go live: set the real Shopify variables, leave `NEXT_PUBLIC_DEMO` unset, replace the campaign images in `src/config/brand.ts` (or just use real product photos from Shopify), and delete `public/demo` if you no longer want it.
+
+## Shopify Online Store theme (Liquid)
+
+The repo root also holds a Shopify theme (`layout/`, `sections/`, `snippets/`, `templates/`, `config/`, `assets/`) connected to the store through Shopify's GitHub integration. The Next.js app under `src/` is a separate, headless storefront; Shopify ignores it.
+
+**What the theme adds on top of the base editorial theme** (`assets/enhance.js`, `assets/enhance.css`, `sections/cart-drawer.liquid`, `snippets/*`):
+
+| Area | What it does |
+| --- | --- |
+| Bag | Slide-out drawer, add without leaving the page, quantity and remove, "Added to your bag" confirmation, gift message, free-shipping bar |
+| Search | Predictive suggestions with images and prices, recent searches, browse links, helpful no-results state |
+| Collections | Filters (availability, price and any filter set in Shopify's Search & Discovery app) with removable chips |
+| Product page | Option buttons and colour swatches, sold-out sizes struck through, swipeable gallery on phones, full-screen pinch/wheel zoom, size guide, related products, sticky add-to-bag bar on phones |
+| Cards | Second image on hover, swatches, Sale / Sold out tags, quick add for single-variant products, saved-item heart |
+| Phones | Bottom navigation bar (Home, Shop, Search, Saved, Bag) |
+| SEO | Product, Organization and WebSite structured data, Open Graph and Twitter tags |
+| Accessibility | Live-region announcements, native dialogs with focus return, visible focus, 44px touch targets, reduced-motion support |
+
+**Merchant setup (in Shopify admin):**
+1. Create a page titled **Saved** and set its template to `page.saved` (the heart buttons and bottom bar link to `/pages/saved`).
+2. Optional: create a size/age chart page and pick it under *Customize → Product page → Size guide page*.
+3. Theme settings → *Store features*: set a free-shipping threshold only if it matches a real shipping rate; leave it at 0 to hide the bar.
+4. Filters come from the Shopify *Search & Discovery* app. Predictive search needs no setup.
+5. Colour swatches appear for options that use Shopify's swatch/metaobject values; options without one show text buttons.
+
+**Checking it:**
+- `npm run theme:check` runs Shopify's Theme Check (passes with 0 offenses at the time of writing).
+- `npm run theme:preview` serves the theme at http://localhost:9292 with **sample data** through LiquidJS. This is an approximation of Shopify's renderer, useful for layout and the theme JavaScript. It is not a substitute for previewing on the real store.
+- `npm run test:theme` runs Playwright tests against that preview (bag, search, filters, options, zoom, saved items, phone navigation, axe accessibility scans).
+
+Not verified against a live store: anything that depends on your real data or Shopify services (predictive search endpoint, Section Rendering responses, filter parameter names, accelerated checkout buttons). Preview the theme in Shopify before publishing.

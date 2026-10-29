@@ -1,32 +1,123 @@
-﻿{% assign short_title = product.metafields.custom.short_title.value %}
-{% if short_title == blank %}{% assign short_title = product.title | split: ' Newborn' | first %}{% if short_title == product.title %}{% assign title_words = product.title | split: ' ' %}{% assign short_title = title_words | slice: 0, 8 | join: ' ' %}{% endif %}{% endif %}
-<section class="product-detail page-wrap product-page">
-  <div class="product-gallery" aria-label="{{ short_title | escape }} photos">
-    {% for media in product.media %}
-      {% case media.media_type %}
-        {% when 'image' %}{{ media | image_url: width: 1800 | image_tag: widths: '500, 800, 1200, 1600, 1800', sizes: '(min-width: 900px) 58vw, 100vw', loading: 'lazy', alt: media.alt | default: short_title }}
-        {% when 'video' %}{{ media | video_tag: controls: true, playsinline: true, preload: 'metadata' }}
-        {% when 'external_video' %}{{ media | external_video_tag }}
-      {% endcase %}
-    {% endfor %}
+﻿{%- capture short_title -%}{% render 'product-short-title', product: product %}{%- endcapture -%}
+{%- assign short_title = short_title | strip -%}
+{%- assign current = product.selected_or_first_available_variant -%}
+{%- assign guide = section.settings.size_guide_page -%}
+<section class="product-detail page-wrap product-page" data-product-section data-product-id="{{ product.id }}">
+  <div class="product-gallery" aria-label="{{ short_title | escape }} photos" data-gallery>
+    {%- for media in product.media -%}
+      {%- assign img_loading = 'lazy' -%}{%- if forloop.first -%}{%- assign img_loading = 'eager' -%}{%- endif -%}
+      <div class="gallery-item" data-media-id="{{ media.id }}">
+        {%- case media.media_type -%}
+          {%- when 'image' -%}
+            <button type="button" class="gallery-zoom" data-zoom-src="{{ media | image_url: width: 2400 }}" data-zoom-alt="{{ media.alt | default: short_title | escape }}" aria-label="View image {{ forloop.index }} full screen" aria-haspopup="dialog">
+              {{ media | image_url: width: 1800 | image_tag: widths: '500, 800, 1200, 1600, 1800', sizes: '(min-width: 900px) 58vw, 100vw', loading: img_loading, alt: media.alt | default: short_title }}
+            </button>
+          {%- when 'video' -%}{{ media | video_tag: controls: true, playsinline: true, preload: 'metadata' }}
+          {%- when 'external_video' -%}{{ media | external_video_tag }}
+        {%- endcase -%}
+      </div>
+    {%- endfor -%}
   </div>
+
   <div class="product-info">
-    {% if product.vendor != blank %}<p class="eyebrow">{{ product.vendor | escape }}</p>{% endif %}
+    <nav class="breadcrumb" aria-label="Breadcrumb"><a href="{{ routes.root_url }}">Home</a><span aria-hidden="true">/</span>{% if collection %}<a href="{{ collection.url }}">{{ collection.title | escape }}</a>{% else %}<a href="{{ routes.all_products_collection_url }}">Shop</a>{% endif %}</nav>
+    {%- if product.vendor != blank -%}<p class="eyebrow">{{ product.vendor | escape }}</p>{%- endif -%}
     <h1>{{ short_title | escape }}</h1>
-    <p class="price"><span data-product-price>{{ product.selected_or_first_available_variant.price | money }}</span></p>
-    {% form 'product', product, class: 'product-form', id: 'ProductForm' %}
-      {% if product.has_only_default_variant %}<input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}" data-variant-id>
-      {% else %}<label for="VariantSelect-{{ section.id }}">Select colour / finish</label><select id="VariantSelect-{{ section.id }}" name="id" data-variant-select>{% for variant in product.variants %}<option value="{{ variant.id }}" data-price="{{ variant.price | money | escape }}" data-available="{{ variant.available }}"{% if variant == product.selected_or_first_available_variant %} selected{% endif %}{% unless variant.available %} disabled{% endunless %}>{{ variant.title | escape }}{% unless variant.available %} - Sold out{% endunless %}</option>{% endfor %}</select>{% endif %}
-      <label for="Quantity-{{ section.id }}">Quantity</label><input id="Quantity-{{ section.id }}" type="number" name="quantity" value="1" min="1" inputmode="numeric">
-      <div class="product-purchase-actions"><button class="button button-dark" type="submit" name="add" data-add-button{% unless product.selected_or_first_available_variant.available %} disabled{% endunless %}>{% if product.selected_or_first_available_variant.available %}Add to bag{% else %}Sold out{% endif %}</button>{% if section.settings.show_express_checkout %}<div class="product-express">{{ form | payment_button }}</div>{% endif %}</div>
-    {% endform %}
-    <div class="product-promise"><span>Checkout powered by Shopify</span><span>Shipping options shown at checkout</span></div>
+    <p class="price">
+      <s class="muted" data-product-compare{% unless current.compare_at_price > current.price %} hidden{% endunless %}>{{ current.compare_at_price | money }}</s>
+      <span data-product-price>{{ current.price | money }}</span>
+    </p>
+
+    {%- form 'product', product, class: 'product-form', id: 'ProductForm', data-ajax-cart: '' -%}
+      {%- if product.has_only_default_variant -%}
+        <input type="hidden" name="id" value="{{ current.id }}" data-variant-id>
+      {%- else -%}
+        <label class="visually-hidden" for="VariantSelect-{{ section.id }}">Variant</label>
+        <select id="VariantSelect-{{ section.id }}" name="id" data-variant-select class="variant-fallback">
+          {%- for variant in product.variants -%}
+            <option value="{{ variant.id }}"{% if variant == current %} selected{% endif %}{% unless variant.available %} disabled{% endunless %}>{{ variant.title | escape }}{% unless variant.available %} - Sold out{% endunless %}</option>
+          {%- endfor -%}
+        </select>
+        {%- for option in product.options_with_values -%}
+          {%- assign option_index = forloop.index0 -%}
+          <fieldset class="opt-group" data-option="{{ option_index }}">
+            <legend class="eyebrow">{{ option.name | escape }}: <span data-option-current>{{ option.selected_value | escape }}</span></legend>
+            <div class="opt-values" role="radiogroup" aria-label="{{ option.name | escape }}">
+              {%- for value in option.values -%}
+                <label class="opt{% if value.swatch.color %} opt--swatch{% endif %}">
+                  <input type="radio" name="option-{{ option_index }}" value="{{ value | escape }}"{% if value.selected %} checked{% endif %} data-option-value>
+                  {%- if value.swatch.color -%}<span class="swatch" style="background:{{ value.swatch.color }}" aria-hidden="true"></span>{%- endif -%}
+                  <span>{{ value | escape }}</span>
+                </label>
+              {%- endfor -%}
+            </div>
+          </fieldset>
+        {%- endfor -%}
+        {%- if guide != blank -%}<button type="button" class="text-btn size-guide-btn" data-size-guide-open aria-haspopup="dialog">Size guide</button>{%- endif -%}
+      {%- endif -%}
+
+      <label for="Quantity-{{ section.id }}">Quantity</label>
+      <input id="Quantity-{{ section.id }}" type="number" name="quantity" value="1" min="1" max="10" inputmode="numeric">
+      <p class="form-error" role="alert" data-product-error></p>
+      <div class="product-purchase-actions">
+        <button class="button button-dark" type="submit" name="add" data-add-button{% unless current.available %} disabled{% endunless %}>{% if current.available %}Add to bag{% else %}Sold out{% endif %}</button>
+        {%- if section.settings.show_express_checkout -%}<div class="product-express">{{ form | payment_button }}</div>{%- endif -%}
+      </div>
+    {%- endform -%}
+
+    <div class="product-promise">
+      <span>Checkout powered by Shopify</span>
+      {%- if settings.delivery_note != blank -%}<span>{{ settings.delivery_note | escape }}</span>{%- else -%}<span>Shipping options shown at checkout</span>{%- endif -%}
+    </div>
     <div class="product-accordions">
-      {% if product.description != blank %}<details><summary>Details &amp; care</summary><div class="product-accordion-content rte">{{ product.description }}</div></details>{% endif %}
+      {%- if product.description != blank -%}<details open><summary>Details &amp; care</summary><div class="product-accordion-content rte">{{ product.description }}</div></details>{%- endif -%}
       <details><summary>Shipping &amp; returns</summary><div class="product-accordion-content">Review the <a href="/policies/shipping-policy">shipping policy</a> and <a href="/policies/refund-policy">refund policy</a> before ordering.</div></details>
     </div>
     <p class="product-payment-note">Fast payment options appear when enabled in your Shopify payment settings.</p>
   </div>
+
+  <div class="product-more" data-recommendations data-url="{{ routes.product_recommendations_url }}?product_id={{ product.id }}&limit=4&section_id=product-recommendations&intent=related"></div>
+
+  <div class="sticky-atc" data-sticky-atc hidden>
+    <span class="sticky-atc__thumb" aria-hidden="true">{% if product.featured_image %}{{ product.featured_image | image_url: width: 120 | image_tag: width: 40, alt: '' }}{% endif %}</span>
+    <span class="sticky-atc__info"><span class="sticky-atc__title">{{ short_title | escape }}</span><span class="muted" data-sticky-price>{{ current.price | money }}</span></span>
+    <button class="button button-dark" type="button" data-sticky-add{% unless current.available %} disabled{% endunless %}>{% if current.available %}Add to bag{% else %}Sold out{% endif %}</button>
+  </div>
 </section>
-{% schema %}{"name":"Product details","settings":[{"type":"checkbox","id":"show_express_checkout","label":"Show accelerated checkout button","default":true}]}
+
+<dialog class="zoom-dialog" data-zoom-dialog aria-label="Image viewer">
+  <button class="icon-close zoom-dialog__close" type="button" data-dialog-close aria-label="Close image viewer">&times;</button>
+  <div class="zoom-stage" data-zoom-stage><img alt="" width="1600" height="2000" data-zoom-img></div>
+  <div class="zoom-controls" role="group" aria-label="Zoom">
+    <button type="button" data-zoom-out aria-label="Zoom out">&minus;</button><output data-zoom-level>100%</output><button type="button" data-zoom-in aria-label="Zoom in">+</button>
+  </div>
+</dialog>
+
+{%- if guide != blank -%}
+  <dialog class="size-dialog" data-size-guide-dialog aria-label="{{ guide.title | escape }}">
+    <div class="size-dialog__panel">
+      <header><h2 class="eyebrow">{{ guide.title | escape }}</h2><button class="icon-close" type="button" data-dialog-close aria-label="Close size guide">&times;</button></header>
+      <div class="rte">{{ guide.content }}</div>
+    </div>
+  </dialog>
+{%- endif -%}
+
+<script type="application/json" data-product-json>
+  {
+    "variants": [
+      {%- for variant in product.variants -%}
+        {"id": {{ variant.id }}, "options": {{ variant.options | json }}, "available": {{ variant.available | json }}, "price": {{ variant.price | money | json }}, "compare": {% if variant.compare_at_price > variant.price %}{{ variant.compare_at_price | money | json }}{% else %}null{% endif %}, "mediaId": {% if variant.featured_media %}{{ variant.featured_media.id }}{% else %}null{% endif %}}{% unless forloop.last %},{% endunless %}
+      {%- endfor -%}
+    ]
+  }
+</script>
+<script type="application/ld+json">{{ product | structured_data }}</script>
+{% schema %}
+{
+  "name": "Product details",
+  "settings": [
+    { "type": "checkbox", "id": "show_express_checkout", "label": "Show accelerated checkout button", "default": true },
+    { "type": "page", "id": "size_guide_page", "label": "Size guide page", "info": "Pick a page that holds your size or age chart. A Size guide button appears when one is chosen." }
+  ]
+}
 {% endschema %}

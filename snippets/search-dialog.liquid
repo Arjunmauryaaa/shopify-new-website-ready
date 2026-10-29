@@ -1,0 +1,28 @@
+<dialog class="search-dialog" data-search-dialog aria-label="Search">
+  <div class="search-dialog__panel">
+    <form class="search-dialog__form" action="{{ routes.search_url }}" method="get" role="search">
+      <label class="visually-hidden" for="SearchDialogInput">Search products</label>
+      <input id="SearchDialogInput" type="search" name="q" autocomplete="off" placeholder="Search" data-search-input>
+      <input type="hidden" name="options[prefix]" value="last">
+      <button class="icon-close" type="button" data-dialog-close aria-label="Close search">&times;</button>
+    </form>
+    <div class="search-dialog__body" data-search-body aria-live="polite">
+      <div class="search-idle" data-search-idle>
+        <section data-recent hidden>
+          <div class="search-idle__head"><h2 class="eyebrow">Recent searches</h2><button type="button" class="text-btn" data-clear-recent>Clear</button></div>
+          <ul class="chips" data-recent-list></ul>
+        </section>
+        {%- assign browse = linklists['main-menu'] -%}
+        {%- if browse.links.size > 0 -%}
+        <section data-browse>
+          <h2 class="eyebrow">Browse</h2>
+          <ul class="chips">
+            {%- for link in browse.links -%}<li><a class="chip" href="{{ link.url }}">{{ link.title | escape }}</a></li>{%- endfor -%}
+          </ul>
+        </section>
+        {%- endif -%}
+      </div>
+      <div data-search-results></div>
+    </div>
+  </div>
+</dialog>

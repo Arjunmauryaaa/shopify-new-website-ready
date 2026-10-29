@@ -1,0 +1,76 @@
+{%- comment -%}
+  Slide-out bag. Re-rendered by assets/enhance.js through the Section Rendering API after every cart change.
+  Everything inside the <form> also works without JavaScript: notes and gift choices are posted with the checkout button.
+{%- endcomment -%}
+<div data-cart-root data-cart-total="{{ cart.item_count }}">
+  <dialog class="cart-drawer" data-cart-drawer aria-label="Shopping bag">
+    <div class="cart-drawer__inner" data-cart-inner>
+      <header class="cart-drawer__head">
+        <h2 class="eyebrow">Bag{% if cart.item_count > 0 %} ({{ cart.item_count }}){% endif %}</h2>
+        <button class="icon-close" type="button" data-dialog-close aria-label="Close bag">&times;</button>
+      </header>
+      <div class="cart-drawer__error" role="alert" data-cart-error></div>
+
+      {%- if cart.item_count == 0 -%}
+        <div class="cart-drawer__empty">
+          <p>Your bag is empty.</p>
+          <a class="button button-outline" href="{{ routes.all_products_collection_url }}">Continue shopping</a>
+        </div>
+      {%- else -%}
+        {%- assign threshold = settings.free_shipping_threshold | default: 0 -%}
+        {%- if threshold > 0 and cart.currency.iso_code == shop.currency -%}
+          {%- assign goal = threshold | times: 100 -%}
+          {%- assign remaining = goal | minus: cart.total_price -%}
+          {%- assign pct = cart.total_price | times: 100.0 | divided_by: goal | at_most: 100 -%}
+          <div class="shipbar" data-testid="free-shipping-bar">
+            <p>{% if remaining > 0 %}<strong>{{ remaining | money }}</strong> away from free shipping{% else %}You&rsquo;ve unlocked free shipping.{% endif %}</p>
+            <div class="shipbar__track" role="presentation"><span style="width:{{ pct }}%"></span></div>
+          </div>
+        {%- endif -%}
+
+        <ul class="cart-drawer__lines">
+          {%- for item in cart.items -%}
+            <li class="cart-line" data-line="{{ forloop.index }}">
+              {%- if item.image -%}<a class="cart-line__image" href="{{ item.url }}" tabindex="-1" aria-hidden="true">{{ item.image | image_url: width: 240 | image_tag: width: 90, loading: 'lazy', alt: '' }}</a>{%- endif -%}
+              <div class="cart-line__info">
+                <a class="cart-line__title" href="{{ item.url }}">{% render 'product-short-title', product: item.product %}</a>
+                {%- unless item.product.has_only_default_variant -%}<p class="muted">{{ item.variant.title | escape }}</p>{%- endunless -%}
+                {%- if item.variant.available == false -%}<p class="cart-line__warn">No longer available</p>{%- endif -%}
+                <div class="cart-line__controls">
+                  <div class="qty" role="group" aria-label="Quantity for {{ item.product.title | escape }}">
+                    <button type="button" data-line-set="{{ forloop.index }}" data-quantity="{{ item.quantity | minus: 1 }}" aria-label="Decrease quantity">&minus;</button>
+                    <output>{{ item.quantity }}</output>
+                    <button type="button" data-line-set="{{ forloop.index }}" data-quantity="{{ item.quantity | plus: 1 }}" aria-label="Increase quantity">+</button>
+                  </div>
+                  <button type="button" class="text-btn" data-line-set="{{ forloop.index }}" data-quantity="0">Remove</button>
+                </div>
+              </div>
+              <p class="cart-line__price">
+                {%- if item.original_line_price > item.final_line_price -%}<s class="muted">{{ item.original_line_price | money }}</s> {%- endif -%}
+                <span>{{ item.final_line_price | money }}</span>
+              </p>
+            </li>
+          {%- endfor -%}
+        </ul>
+
+        <form class="cart-drawer__foot" action="{{ routes.cart_url }}" method="post" novalidate>
+          {%- if settings.show_gift_message -%}
+            <details class="gift"{% if cart.note != blank or cart.attributes.Gift == 'Yes' %} open{% endif %}>
+              <summary>This is a gift</summary>
+              <label class="check"><input type="checkbox" name="attributes[Gift]" value="Yes"{% if cart.attributes.Gift == 'Yes' %} checked{% endif %} data-cart-gift> Add a gift message to this order</label>
+              <label for="CartNote" class="visually-hidden">Gift message or order note</label>
+              <textarea id="CartNote" name="note" rows="3" maxlength="500" placeholder="Your message (optional)" data-cart-note>{{ cart.note }}</textarea>
+            </details>
+          {%- endif -%}
+          <p class="cart-drawer__subtotal"><span>Subtotal</span><strong>{{ cart.total_price | money }}</strong></p>
+          <p class="muted small">Shipping, taxes and discounts are finalised at checkout.</p>
+          <button class="button button-dark button-block" type="submit" name="checkout">Checkout</button>
+          <a class="text-link" href="{{ routes.cart_url }}">View bag</a>
+        </form>
+      {%- endif -%}
+    </div>
+  </dialog>
+</div>
+{% schema %}
+{"name":"Cart drawer","settings":[]}
+{% endschema %}

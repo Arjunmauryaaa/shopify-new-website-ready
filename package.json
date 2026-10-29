@@ -12,7 +12,10 @@
     "test:e2e": "playwright test",
     "verify": "npm run lint && npm run typecheck && npm run test && npm run build",
     "demo": "node scripts/demo.mjs",
-    "demo:assets": "node scripts/generate-demo-assets.mjs"
+    "demo:assets": "node scripts/generate-demo-assets.mjs",
+    "theme:preview": "node scripts/theme-preview.mjs",
+    "theme:check": "npx -y @shopify/cli@latest theme check --path .",
+    "test:theme": "playwright test -c playwright.theme.config.ts"
   },
   "dependencies": {
     "motion": "^14.6.0",
@@ -31,6 +34,7 @@
     "@vitejs/plugin-react": "^6.1.2",
     "eslint": "^9",
     "eslint-config-next": "16.4.3",
+    "liquidjs": "^10.30.1",
     "typescript": "^5",
     "vitest": "^5.0.5"
   }
