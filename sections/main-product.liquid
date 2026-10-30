@@ -2,12 +2,26 @@
 {%- assign short_title = short_title | strip -%}
 {%- assign current = product.selected_or_first_available_variant -%}
 {%- assign guide = section.settings.size_guide_page -%}
+{%- assign active_media = current.featured_media | default: product.featured_media -%}
 <section class="product-detail page-wrap product-page" data-product-section data-product-id="{{ product.id }}">
-  <div class="product-media-layout">
+  <div class="product-media-layout{% if product.media.size < 2 %} product-media-layout--single{% endif %}" data-product-gallery>
+    {%- if product.media.size > 1 -%}
+      <div class="product-gallery-thumbs" role="group" aria-label="Choose product image or video">
+        {%- for media in product.media -%}
+          {%- assign preview = media.preview_image -%}
+          {%- if preview != blank -%}
+            <button type="button" class="gallery-thumb" data-gallery-thumb data-media-id="{{ media.id }}" aria-label="Show media {{ forloop.index }}" aria-current="{% if active_media.id == media.id or active_media == blank and forloop.first %}true{% else %}false{% endif %}">
+              {{ preview | image_url: width: 180 | image_tag: widths: '90, 180', sizes: '76px', loading: 'lazy', alt: preview.alt | default: short_title }}
+              {%- if media.media_type == 'video' or media.media_type == 'external_video' -%}<span class="gallery-thumb__play" aria-hidden="true">▶</span>{%- endif -%}
+            </button>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
     <div class="product-gallery" aria-label="{{ short_title | escape }} photos and videos" data-gallery>
       {%- for media in product.media -%}
         {%- assign img_loading = 'lazy' -%}{%- if forloop.first -%}{%- assign img_loading = 'eager' -%}{%- endif -%}
-        <div class="gallery-item" data-gallery-media-id="{{ media.id }}">
+        <div class="gallery-item" data-gallery-media-id="{{ media.id }}"{% unless active_media.id == media.id or active_media == blank and forloop.first %} hidden{% endunless %}>
           {%- case media.media_type -%}
             {%- when 'image' -%}
               <button type="button" class="gallery-zoom" data-zoom-src="{{ media | image_url: width: 2400 }}" data-zoom-alt="{{ media.alt | default: short_title | escape }}" aria-label="View image full screen" aria-haspopup="dialog">
