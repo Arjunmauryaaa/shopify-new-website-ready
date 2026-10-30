@@ -325,30 +325,9 @@
     const addBtn = $('[data-add-button]', productSection);
     const priceEl = $('[data-product-price]', productSection);
     const compareEl = $('[data-product-compare]', productSection);
-    const skuEl = $('[data-product-sku]', productSection);
     const sticky = $('[data-sticky-atc]', productSection);
     const stickyPrice = $('[data-sticky-price]', productSection);
     const stickyAdd = $('[data-sticky-add]', productSection);
-    const galleryItems = $$('[data-gallery-media-id]', productSection);
-    const galleryThumbs = $$('[data-gallery-thumb]', productSection);
-
-    function setActiveMedia(mediaId) {
-      if (!galleryItems.length) return;
-      const active = galleryItems.find((item) => item.dataset.galleryMediaId === String(mediaId)) || galleryItems[0];
-      galleryItems.forEach((item) => {
-        const isActive = item === active;
-        item.hidden = !isActive;
-        if (!isActive) $('video', item)?.pause();
-      });
-      galleryThumbs.forEach((button) => {
-        button.setAttribute('aria-current', button.dataset.mediaId === active.dataset.galleryMediaId ? 'true' : 'false');
-      });
-    }
-
-    productSection.addEventListener('click', (event) => {
-      const thumb = event.target.closest('[data-gallery-thumb]');
-      if (thumb && productSection.contains(thumb)) setActiveMedia(thumb.dataset.mediaId);
-    });
 
     const chosen = () => groups.map((g) => $('input:checked', g)?.value);
     const match = (selection) => variants.find((v) => v.options.every((o, i) => o === selection[i]));
@@ -377,13 +356,15 @@
       if (select) select.value = String(variant.id);
       if (priceEl) priceEl.textContent = variant.price;
       if (stickyPrice) stickyPrice.textContent = variant.price;
-      if (skuEl) skuEl.textContent = variant.sku || '—';
       if (compareEl) { compareEl.hidden = !variant.compare; if (variant.compare) compareEl.textContent = variant.compare; }
       [addBtn, stickyAdd].forEach((b) => { if (b) { b.disabled = !variant.available; b.textContent = variant.available ? 'Add to bag' : 'Sold out'; } });
       const url = new URL(location.href);
       url.searchParams.set('variant', variant.id);
       history.replaceState(null, '', url);
-      if (variant.mediaId) setActiveMedia(variant.mediaId);
+      if (variant.mediaId) {
+        const item = $(`[data-media-id="${variant.mediaId}"]`, productSection);
+        item?.scrollIntoView({ block: 'nearest', inline: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+      }
     }
 
     if (groups.length) {

@@ -2,47 +2,27 @@
 {%- assign short_title = short_title | strip -%}
 {%- assign current = product.selected_or_first_available_variant -%}
 {%- assign guide = section.settings.size_guide_page -%}
-{%- assign active_media = current.featured_media | default: product.featured_media -%}
 <section class="product-detail page-wrap product-page" data-product-section data-product-id="{{ product.id }}">
-  <div class="product-media-layout{% if product.media.size < 2 %} product-media-layout--single{% endif %}" data-product-gallery>
-    {%- if product.media.size > 1 -%}
-      <div class="product-gallery-thumbs" role="group" aria-label="Choose product image or video">
-        {%- for media in product.media -%}
-          {%- assign preview = media.preview_image -%}
-          {%- if preview != blank -%}
-            <button type="button" class="gallery-thumb" data-gallery-thumb data-media-id="{{ media.id }}" aria-label="Show media {{ forloop.index }}" aria-current="{% if active_media.id == media.id or active_media == blank and forloop.first %}true{% else %}false{% endif %}">
-              {{ preview | image_url: width: 180 | image_tag: widths: '90, 180', sizes: '76px', loading: 'lazy', alt: preview.alt | default: short_title }}
-              {%- if media.media_type == 'video' or media.media_type == 'external_video' -%}<span class="gallery-thumb__play" aria-hidden="true">▶</span>{%- endif -%}
+  <div class="product-gallery" aria-label="{{ short_title | escape }} photos" data-gallery>
+    {%- for media in product.media -%}
+      {%- assign img_loading = 'lazy' -%}{%- if forloop.first -%}{%- assign img_loading = 'eager' -%}{%- endif -%}
+      <div class="gallery-item" data-media-id="{{ media.id }}">
+        {%- case media.media_type -%}
+          {%- when 'image' -%}
+            <button type="button" class="gallery-zoom" data-zoom-src="{{ media | image_url: width: 2400 }}" data-zoom-alt="{{ media.alt | default: short_title | escape }}" aria-label="View image {{ forloop.index }} full screen" aria-haspopup="dialog">
+              {{ media | image_url: width: 1800 | image_tag: widths: '500, 800, 1200, 1600, 1800', sizes: '(min-width: 900px) 58vw, 100vw', loading: img_loading, alt: media.alt | default: short_title }}
             </button>
-          {%- endif -%}
-        {%- endfor -%}
+          {%- when 'video' -%}{{ media | video_tag: controls: true, playsinline: true, preload: 'metadata' }}
+          {%- when 'external_video' -%}{{ media | external_video_tag }}
+        {%- endcase -%}
       </div>
-    {%- endif -%}
-    <div class="product-gallery" aria-label="{{ short_title | escape }} photos and videos" data-gallery>
-      {%- for media in product.media -%}
-        {%- assign img_loading = 'lazy' -%}{%- if forloop.first -%}{%- assign img_loading = 'eager' -%}{%- endif -%}
-        <div class="gallery-item" data-gallery-media-id="{{ media.id }}"{% unless active_media.id == media.id or active_media == blank and forloop.first %} hidden{% endunless %}>
-          {%- case media.media_type -%}
-            {%- when 'image' -%}
-              <button type="button" class="gallery-zoom" data-zoom-src="{{ media | image_url: width: 2400 }}" data-zoom-alt="{{ media.alt | default: short_title | escape }}" aria-label="View image full screen" aria-haspopup="dialog">
-                {{ media | image_url: width: 1800 | image_tag: widths: '500, 800, 1200, 1600, 1800', sizes: '(min-width: 900px) 58vw, 100vw', loading: img_loading, alt: media.alt | default: short_title }}
-              </button>
-            {%- when 'video' -%}{{ media | video_tag: controls: true, playsinline: true, preload: 'metadata', image_size: '1200x' }}
-            {%- when 'external_video' -%}{{ media | external_video_tag: loading: 'lazy' }}
-            {%- when 'model' -%}{{ media | model_viewer_tag: image_size: '1200x', reveal: 'interaction', toggleable: true }}
-          {%- endcase -%}
-        </div>
-      {%- else -%}
-        {%- if product.featured_image -%}<div class="gallery-item"><div class="gallery-zoom">{{ product.featured_image | image_url: width: 1800 | image_tag: widths: '500, 800, 1200, 1600, 1800', sizes: '(min-width: 900px) 58vw, 100vw', loading: 'eager', alt: product.featured_image.alt | default: short_title }}</div></div>{%- endif -%}
-      {%- endfor -%}
-    </div>
+    {%- endfor -%}
   </div>
 
   <div class="product-info">
     <nav class="breadcrumb" aria-label="Breadcrumb"><a href="{{ routes.root_url }}">Home</a><span aria-hidden="true">/</span>{% if collection %}<a href="{{ collection.url }}">{{ collection.title | escape }}</a>{% else %}<a href="{{ routes.all_products_collection_url }}">Shop</a>{% endif %}</nav>
     {%- if product.vendor != blank -%}<p class="eyebrow">{{ product.vendor | escape }}</p>{%- endif -%}
     <h1>{{ short_title | escape }}</h1>
-    <p class="product-sku"><span>SKU</span><span data-product-sku>{{ current.sku | default: '—' | escape }}</span></p>
     <p class="price">
       <s class="muted" data-product-compare{% unless current.compare_at_price > current.price %} hidden{% endunless %}>{{ current.compare_at_price | money }}</s>
       <span data-product-price>{{ current.price | money }}</span>
@@ -85,23 +65,6 @@
       </div>
     {%- endform -%}
 
-    {%- assign has_specs = false -%}
-    {%- if product.metafields.custom.control_type != blank or product.metafields.custom.dimensions != blank or product.metafields.custom.material != blank or product.metafields.custom.packing_list != blank or product.metafields.custom.weight != blank or product.metafields.custom.power != blank or product.metafields.custom.voltage != blank -%}{%- assign has_specs = true -%}{%- endif -%}
-    {%- if has_specs -%}
-      <section class="product-specs" aria-labelledby="ProductSpecs-{{ section.id }}">
-        <h2 id="ProductSpecs-{{ section.id }}">Product details</h2>
-        <dl>
-          {%- if product.metafields.custom.control_type != blank -%}<div><dt>Control type</dt><dd>{{ product.metafields.custom.control_type.value | escape }}</dd></div>{%- endif -%}
-          {%- if product.metafields.custom.dimensions != blank -%}<div><dt>Dimensions</dt><dd>{{ product.metafields.custom.dimensions.value | escape }}</dd></div>{%- endif -%}
-          {%- if product.metafields.custom.material != blank -%}<div><dt>Material</dt><dd>{{ product.metafields.custom.material.value | escape }}</dd></div>{%- endif -%}
-          {%- if product.metafields.custom.weight != blank -%}<div><dt>Weight</dt><dd>{{ product.metafields.custom.weight.value | escape }}</dd></div>{%- endif -%}
-          {%- if product.metafields.custom.power != blank -%}<div><dt>Power</dt><dd>{{ product.metafields.custom.power.value | escape }}</dd></div>{%- endif -%}
-          {%- if product.metafields.custom.voltage != blank -%}<div><dt>Voltage</dt><dd>{{ product.metafields.custom.voltage.value | escape }}</dd></div>{%- endif -%}
-          {%- if product.metafields.custom.packing_list != blank -%}<div><dt>In the box</dt><dd>{{ product.metafields.custom.packing_list.value | escape }}</dd></div>{%- endif -%}
-        </dl>
-      </section>
-    {%- endif -%}
-
     <div class="product-promise">
       <span>Checkout powered by Shopify</span>
       {%- if settings.delivery_note != blank -%}<span>{{ settings.delivery_note | escape }}</span>{%- else -%}<span>Shipping options shown at checkout</span>{%- endif -%}
@@ -143,7 +106,7 @@
   {
     "variants": [
       {%- for variant in product.variants -%}
-        {"id": {{ variant.id }}, "options": {{ variant.options | json }}, "available": {{ variant.available | json }}, "price": {{ variant.price | money | json }}, "compare": {% if variant.compare_at_price > variant.price %}{{ variant.compare_at_price | money | json }}{% else %}null{% endif %}, "sku": {{ variant.sku | json }}, "mediaId": {% if variant.featured_media %}{{ variant.featured_media.id | json }}{% else %}null{% endif %}}{% unless forloop.last %},{% endunless %}
+        {"id": {{ variant.id }}, "options": {{ variant.options | json }}, "available": {{ variant.available | json }}, "price": {{ variant.price | money | json }}, "compare": {% if variant.compare_at_price > variant.price %}{{ variant.compare_at_price | money | json }}{% else %}null{% endif %}, "mediaId": {% if variant.featured_media %}{{ variant.featured_media.id }}{% else %}null{% endif %}}{% unless forloop.last %},{% endunless %}
       {%- endfor -%}
     ]
   }
