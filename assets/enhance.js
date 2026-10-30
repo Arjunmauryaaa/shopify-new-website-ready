@@ -330,25 +330,11 @@
     const stickyPrice = $('[data-sticky-price]', productSection);
     const stickyAdd = $('[data-sticky-add]', productSection);
     const galleryItems = $$('[data-gallery-media-id]', productSection);
-    const galleryThumbs = $$('[data-gallery-thumb]', productSection);
 
-    function setActiveMedia(mediaId) {
-      if (!galleryItems.length) return;
-      const active = galleryItems.find((item) => item.dataset.galleryMediaId === String(mediaId)) || galleryItems[0];
-      galleryItems.forEach((item) => {
-        const isActive = item === active;
-        item.hidden = !isActive;
-        if (!isActive) $('video', item)?.pause();
-      });
-      galleryThumbs.forEach((button) => {
-        button.setAttribute('aria-current', button.dataset.mediaId === active.dataset.galleryMediaId ? 'true' : 'false');
-      });
+    function scrollToMedia(mediaId) {
+      const item = galleryItems.find((media) => media.dataset.galleryMediaId === String(mediaId));
+      item?.scrollIntoView({ block: 'nearest', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
     }
-
-    productSection.addEventListener('click', (event) => {
-      const thumb = event.target.closest('[data-gallery-thumb]');
-      if (thumb && productSection.contains(thumb)) setActiveMedia(thumb.dataset.mediaId);
-    });
 
     const chosen = () => groups.map((g) => $('input:checked', g)?.value);
     const match = (selection) => variants.find((v) => v.options.every((o, i) => o === selection[i]));
@@ -383,7 +369,7 @@
       const url = new URL(location.href);
       url.searchParams.set('variant', variant.id);
       history.replaceState(null, '', url);
-      if (variant.mediaId) setActiveMedia(variant.mediaId);
+      if (variant.mediaId) scrollToMedia(variant.mediaId);
     }
 
     if (groups.length) {
