@@ -45,6 +45,7 @@
   function updateCounts(count) {
     $$('[data-cart-count]').forEach((el) => { el.textContent = `(${count})`; });
     $$('[data-cart-badge]').forEach((el) => { el.textContent = count; el.hidden = count === 0; });
+    $$('[data-cart-badge]').forEach((el) => { el.textContent = count; el.hidden = count === 0; });
   }
 
   function applySections(sections) {
@@ -480,4 +481,20 @@
     filterForm.addEventListener('change', apply);
     filterForm.addEventListener('input', apply);
   }
+})();
+
+/* ---------- visual polish: sticky header state + scroll reveal ---------- */
+(() => {
+  const header = document.querySelector('.site-header');
+  if (header) {
+    const onScroll = () => header.classList.toggle('is-scrolled', window.scrollY > 40);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+  }
+  if (!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const targets = document.querySelectorAll('.section-heading, .product-card, .collection-card, .article-grid > *, .home-story, .editorial-panel');
+  if (!targets.length) return;
+  document.documentElement.classList.add('js-reveal');
+  const io = new IntersectionObserver((entries) => entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('is-visible'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px' });
+  targets.forEach((el) => { el.classList.add('reveal'); io.observe(el); });
 })();

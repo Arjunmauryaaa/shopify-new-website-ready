@@ -9,12 +9,16 @@
     <title>{{ page_title }}{% if current_tags %} - {{ current_tags | join: ', ' }}{% endif %}{% unless page_title contains shop.name %} - {{ shop.name }}{% endunless %}</title>
     {% if page_description != blank %}<meta name="description" content="{{ page_description | escape }}">{% endif %}
     {% render 'seo-meta' %}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@400;500&display=swap">
     {{ content_for_header }}
     {{ 'theme.css' | asset_url | stylesheet_tag }}
     {{ 'home.css' | asset_url | stylesheet_tag }}
     {{ 'media.css' | asset_url | stylesheet_tag }}
     {{ 'theme-mode.css' | asset_url | stylesheet_tag }}
     {{ 'enhance.css' | asset_url | stylesheet_tag }}
+    {{ 'polish.css' | asset_url | stylesheet_tag }}
     <script>
       window.themeConfig = {
         currency: {{ cart.currency.iso_code | json }},

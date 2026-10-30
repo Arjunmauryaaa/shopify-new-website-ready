@@ -1,0 +1,59 @@
+/* Visual polish: typography, soft accent colour, sticky header, icon actions, motion. Loaded last. */
+:root{--serif:'Cormorant Garamond',Georgia,'Times New Roman',serif;--sans:'Inter',system-ui,-apple-system,'Segoe UI',Arial,sans-serif;--accent:#8f9a7e;--accent-soft:#eef0e8;--sale:#a4505a;--ease:cubic-bezier(.22,.61,.36,1)}
+:root[data-theme=dark]{--accent:#a9b497;--accent-soft:#222520;--sale:#d58a93}
+body{font-size:15px;line-height:1.7;letter-spacing:.005em}
+@media(max-width:700px){body{font-size:16px}}
+.hero-copy h1,.page-heading h1,.not-found h1,.section-heading h2,.product-info h1{font-weight:500;letter-spacing:-.01em}
+.wordmark{font-weight:600;letter-spacing:.24em}
+.eyebrow,.desktop-nav a,.footer-links a,.text-link,.button,.product-form label,.cart-total label{font-size:11.5px;letter-spacing:.12em}
+
+/* announcement bar */
+.announcement-bar{background:var(--text);color:var(--bg);text-align:center;font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;padding:9px var(--gutter)}
+.announcement-bar a,.announcement-bar p{margin:0;color:inherit;display:block}
+.announcement-bar a:hover{text-decoration:underline;text-underline-offset:3px}
+
+/* sticky header: the Shopify section wrapper is the sticky element, so it stays pinned for the whole page */
+.shopify-section:has(>.site-header),.shopify-section:has(>.announcement-bar){position:sticky;top:0;z-index:30}
+.site-header,.template-index .site-header{position:relative;inset:auto;height:76px;background:var(--bg);color:var(--text);border-color:var(--line);transition:box-shadow .3s var(--ease),height .3s var(--ease)}
+.site-header.is-scrolled,.template-index .site-header.is-scrolled{height:60px;box-shadow:0 6px 24px -14px rgba(0,0,0,.28)}
+.announcement-bar{transition:margin-top .3s var(--ease)}
+.desktop-nav a{position:relative;padding:6px 0}
+.desktop-nav a::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:currentColor;transform:scaleX(0);transform-origin:left;transition:transform .35s var(--ease)}
+.desktop-nav a:hover::after,.desktop-nav a[aria-current=page]::after{transform:scaleX(1)}
+
+/* icon actions */
+.header-actions{gap:clamp(6px,1.2vw,14px)}
+.icon-btn{position:relative;display:inline-grid;place-items:center;width:40px;height:40px;border:0;background:transparent;border-radius:50%;color:inherit;cursor:pointer;padding:0;transition:background .25s var(--ease)}
+.icon-btn:hover{background:var(--accent-soft)}
+.icon-btn svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.3;stroke-linecap:round;stroke-linejoin:round}
+.theme-toggle.icon-btn span:first-child{font-size:18px}
+.cart-badge{position:absolute;top:3px;right:1px;min-width:17px;height:17px;padding:0 4px;border-radius:9px;background:var(--accent);color:#fff;font:500 10px/17px var(--sans);text-align:center}
+.cart-badge[hidden]{display:none}
+@media(max-width:900px){.site-header.is-scrolled{height:64px}}
+
+/* buttons */
+.button{border-radius:999px;font-weight:500;transition:background .25s var(--ease),color .25s var(--ease),border-color .25s var(--ease),transform .25s var(--ease),box-shadow .25s var(--ease)}
+.button:hover{transform:translateY(-1px);box-shadow:0 8px 20px -10px rgba(0,0,0,.35)}
+.button-dark:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+.button-outline:hover{background:var(--text);color:var(--bg)}
+.button-light:hover{background:#fff;color:#171715}
+.button:focus-visible,.icon-btn:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.shopify-payment-button__button{border-radius:999px!important}
+.product-form input,.product-form select,.search-form input{border-radius:10px}
+
+/* cards, sale, images */
+.product-image{border-radius:14px}
+.product-card{transition:transform .45s var(--ease)}
+.product-card:hover{transform:translateY(-3px)}
+.product-meta{font-size:13px}
+.sale-note,.form-error,.cart-drawer__error,.cart-line__warn{color:var(--sale)}
+.collection-card img,.collection-card>.image-placeholder,.article-grid img{border-radius:14px}
+.section-wrap,.page-wrap{padding-block:clamp(48px,7vw,104px)}
+
+/* scroll reveal (enhance.js adds .js-reveal; without JS everything stays visible) */
+.js-reveal .reveal{opacity:0;transform:translateY(18px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
+.js-reveal .reveal.is-visible{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){.js-reveal .reveal{opacity:1;transform:none;transition:none}.button,.product-card,.site-header{transition:none}.button:hover,.product-card:hover{transform:none}}
+
+/* header is now in normal flow on the homepage, so the hero no longer reserves space for an overlay */
+.home-hero{padding-top:0;height:min(calc(100svh - 120px),860px)}
