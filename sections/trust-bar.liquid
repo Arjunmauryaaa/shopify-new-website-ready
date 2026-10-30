@@ -1,0 +1,19 @@
+<section class="trust-bar" aria-label="Store promises">
+  <ul class="trust-bar__list">
+    {% for block in section.blocks %}
+      <li class="trust-bar__item" {{ block.shopify_attributes }}>
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          {% case block.settings.icon %}
+            {% when 'truck' %}<path d="M3 6.5h11v9H3zM14 10h4l3 3v2.5h-7z"/><circle cx="7.5" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/>
+            {% when 'return' %}<path d="M4 12a8 8 0 1 0 2.6-5.9M4 4.5v4h4"/>
+            {% when 'lock' %}<rect x="5" y="10.5" width="14" height="9.5" rx="2"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/>
+            {% else %}<path d="M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10Z"/>
+          {% endcase %}
+        </svg>
+        <div><strong>{{ block.settings.title | escape }}</strong><span>{{ block.settings.text | escape }}</span></div>
+      </li>
+    {% endfor %}
+  </ul>
+</section>
+{% schema %}{"name":"Trust bar","max_blocks":4,"blocks":[{"type":"item","name":"Promise","settings":[{"type":"select","id":"icon","label":"Icon","options":[{"value":"truck","label":"Delivery"},{"value":"return","label":"Returns"},{"value":"lock","label":"Secure"},{"value":"heart","label":"Care"}],"default":"truck"},{"type":"text","id":"title","label":"Title","default":"Free shipping"},{"type":"text","id":"text","label":"Text","default":"On orders over Rs. 2,000"}]}],"presets":[{"name":"Trust bar"}]}
+{% endschema %}

@@ -205,7 +205,7 @@ function collectionFor(handle) {
   return null;
 }
 
-async function renderSection(type, id, settingValues, parentCtx) {
+async function renderSection(type, id, settingValues, parentCtx, blockData = null) {
   const file = path.join(ROOT, "sections", `${type}.liquid`);
   if (!fs.existsSync(file)) return `<!-- missing section ${type} -->`;
   const source = fs.readFileSync(file, "utf8").replace(/^﻿/, "");
@@ -213,7 +213,14 @@ async function renderSection(type, id, settingValues, parentCtx) {
   const schema = schemaMatch ? JSON.parse(schemaMatch[1]) : { settings: [] };
   const settings = {};
   for (const def of schema.settings || []) if (def.id) settings[def.id] = resolveSetting(def, settingValues[def.id]);
-  const html = await engine.parseAndRender(source, { ...parentCtx.environments, section: { id, settings, type } }, { globals: parentCtx.environments });
+  const blocks = (blockData?.order || []).map((bid) => {
+    const b = blockData.blocks[bid];
+    const def = (schema.blocks || []).find((x) => x.type === b.type) || { settings: [] };
+    const bs = {};
+    for (const d of def.settings || []) if (d.id) bs[d.id] = resolveSetting(d, (b.settings || {})[d.id]);
+    return { id: bid, type: b.type, settings: bs, shopify_attributes: "" };
+  });
+  const html = await engine.parseAndRender(source, { ...parentCtx.environments, section: { id, settings, type, blocks } }, { globals: parentCtx.environments });
   return `<div id="shopify-section-${id}" class="shopify-section">${html}</div>`;
 }
 
@@ -237,7 +244,7 @@ async function renderTemplate(templateName, url, extra = {}) {
   let body = "";
   if (fs.existsSync(jsonPath)) {
     const t = jsonc(fs.readFileSync(jsonPath, "utf8").replace(/^﻿/, ""));
-    for (const id of t.order) body += await renderSection(t.sections[id].type, id, t.sections[id].settings || {}, ctx);
+    for (const id of t.order) body += await renderSection(t.sections[id].type, id, t.sections[id].settings || {}, ctx, t.sections[id].blocks ? { blocks: t.sections[id].blocks, order: t.sections[id].block_order || Object.keys(t.sections[id].blocks) } : null);
   }
   const layout = read("layout", "theme.liquid");
   const note = '<p style="margin:0;padding:6px 12px;background:#171715;color:#fff;font:11px/1.4 sans-serif;text-align:center">Theme preview with sample data. Local approximation, not Shopify\'s renderer.</p>';

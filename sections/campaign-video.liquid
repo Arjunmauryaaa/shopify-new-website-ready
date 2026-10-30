@@ -3,7 +3,7 @@
     {% if section.settings.video != blank %}
       {{ section.settings.video | video_tag: controls: true, muted: true, playsinline: true, preload: 'metadata' }}
     {% else %}
-      <video controls playsinline preload="metadata" poster="{{ 'campaign-baby-clothes-rack.jpeg' | asset_url }}" aria-label="{{ section.settings.heading | escape }}">
+      <video controls playsinline preload="metadata" poster="{{ 'es-pointelle-white.jpg' | asset_url }}" aria-label="{{ section.settings.heading | escape }}">
         <source src="{{ 'campaign-baby-clothes-video.mp4' | asset_url }}" type="video/mp4">
         Your browser does not support the video element.
       </video>

@@ -13,25 +13,43 @@
       "type": "home-hero",
       "settings": {}
     },
-    "panels": {
-      "type": "editorial-panels",
+    "trust": {
+      "type": "trust-bar",
+      "blocks": {
+        "t1": { "type": "item", "settings": { "icon": "truck", "title": "Free shipping", "text": "On orders over Rs. 2,000" } },
+        "t2": { "type": "item", "settings": { "icon": "return", "title": "Easy returns", "text": "15-day return window" } },
+        "t3": { "type": "item", "settings": { "icon": "lock", "title": "Secure checkout", "text": "Pay safely with Razorpay" } },
+        "t4": { "type": "item", "settings": { "icon": "heart", "title": "Made for little ones", "text": "Soft, comfortable everyday pieces" } }
+      },
+      "block_order": ["t1", "t2", "t3", "t4"],
+      "settings": {}
+    },
+    "categories": {
+      "type": "category-tiles",
+      "blocks": {
+        "c1": { "type": "tile", "settings": { "collection": "bodysuits", "title": "Bodysuits" } },
+        "c2": { "type": "tile", "settings": { "collection": "knitwear", "title": "Knitwear" } },
+        "c3": { "type": "tile", "settings": { "title": "Sleepwear" } },
+        "c4": { "type": "tile", "settings": { "title": "Accessories" } }
+      },
+      "block_order": ["c1", "c2", "c3", "c4"],
       "settings": {}
     },
     "arrivals": {
       "type": "featured-collection",
       "settings": {
-        "eyebrow": "New arrivals",
+        "eyebrow": "Just in",
         "title": "New Arrivals",
         "collection": "all",
-        "limit": 4
+        "limit": 8
       }
+    },
+    "panels": {
+      "type": "editorial-panels",
+      "settings": {}
     },
     "story": {
       "type": "home-story",
-      "settings": {}
-    },
-    "video": {
-      "type": "campaign-video",
       "settings": {}
     },
     "featured": {
@@ -39,6 +57,10 @@
       "settings": {
         "collection": "all"
       }
+    },
+    "video": {
+      "type": "campaign-video",
+      "settings": {}
     },
     "statement": {
       "type": "brand-statement",
@@ -57,11 +79,13 @@
   },
   "order": [
     "hero",
-    "panels",
+    "trust",
+    "categories",
     "arrivals",
+    "panels",
     "story",
-    "video",
     "featured",
+    "video",
     "statement",
     "journal",
     "newsletter"

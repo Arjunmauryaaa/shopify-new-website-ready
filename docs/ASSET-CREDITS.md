@@ -7,3 +7,5 @@ These stock assets are used only in editorial campaign sections. Product cards a
 - **Baby-clothes folding video** — Pavel Danilyuk, [Pexels video 6953285](https://www.pexels.com/video/a-woman-folding-baby-clothes-6953285/), stored as `assets/campaign-baby-clothes-video.mp4`.
 
 Pexels marks these items free to use. The Pexels license permits use on e-commerce websites and says not to imply a pictured person or brand endorses a product: [Pexels license](https://www.pexels.com/license/). The photos and video are lifestyle imagery, not photos of Arjunta's specific catalog item.
+
+The `assets/es-*.jpg` files are detail crops cut from the two photos above by `scripts/generate-campaign-crops.mjs`, so each homepage section shows a different view. Upload your own photography in **Customize** to replace any of them.
