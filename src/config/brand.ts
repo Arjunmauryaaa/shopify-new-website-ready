@@ -33,7 +33,7 @@ export type EditorialPanel = {
 
 import { demoOverrides } from "./demo";
 
-const name = process.env.NEXT_PUBLIC_BRAND_NAME || "Arjunta";
+const name = process.env.NEXT_PUBLIC_BRAND_NAME || "Mysa Baby";
 
 const base = {
   name,
@@ -112,7 +112,7 @@ const base = {
       body: "A curated selection from the collection.",
       image: { alt: "Featured collection", position: "50% 40%" } as CampaignImage,
     },
-    statement: "Editable brand statement — replace with your own words in src/config/brand.ts.",
+    statement: "Little pieces for the moments that become everything.",
     journal: { blog: "journal", title: "Journal", count: 3 },
   },
 

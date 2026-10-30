@@ -14,7 +14,7 @@
         "type": "text",
         "id": "site_name",
         "label": "Storefront name",
-        "default": "East Side"
+        "default": "Mysa Baby"
       },
       {
         "type": "color",
