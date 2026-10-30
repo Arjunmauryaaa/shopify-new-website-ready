@@ -1,4 +1,4 @@
-/* Editorial storefront layout to match the local Arjunta experience. */
+/* Editorial storefront layout for EAST SIDE. */
 :root{color-scheme:dark}
 .site-header{height:76px;background:var(--bg);color:var(--text);border-color:var(--line)}
 .header-inner{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)}

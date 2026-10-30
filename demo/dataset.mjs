@@ -29,7 +29,7 @@ export function build() {
     const available = variants.some((v) => v.availableForSale);
     const price = money(p.price);
     return {
-      id: `gid://shopify/Product/${100 + i}`, handle: p.handle, title: p.title, vendor: "Arjunta", productType: p.type,
+      id: `gid://shopify/Product/${100 + i}`, handle: p.handle, title: p.title, vendor: "EAST SIDE", productType: p.type,
       availableForSale: available, tags: [], description: p.desc.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim(), descriptionHtml: p.desc,
       seo: { title: null, description: null },
       options: [...(p.sizes ? [{ id: `o-size-${i}`, name: "Size", values: p.sizes }] : []), { id: `o-color-${i}`, name: "Color", values: p.colors.map((c) => c[0]), optionValues: p.colors.map((c) => ({ name: c[0], swatch: { color: c[1] } })) }],
@@ -86,7 +86,7 @@ export function build() {
   const sample = '<p class="muted"><em>Sample content for the demo storefront. Replace with your own policy text in Shopify admin.</em></p>';
   const page = (handle, title, body) => ({ id: `gid://shopify/Page/${handle}`, handle, title, body: body + sample, bodySummary: title });
   const pages = {
-    about: page("about", "About", "<p>Arjunta makes considered clothing in natural fibres and quiet colours — pieces designed to be worn often and kept for years.</p><p>This is placeholder copy for the demo. Tell your own story here: where you began, how you make things and what you believe in.</p>"),
+    about: page("about", "About", "<p>EAST SIDE makes considered clothing in natural fibres and quiet colours — pieces designed to be worn often and kept for years.</p><p>This is placeholder copy for the demo. Tell your own story here: where you began, how you make things and what you believe in.</p>"),
     shipping: page("shipping", "Shipping", "<h2>Delivery</h2><p>Orders are dispatched within 1–2 working days. Delivery usually takes 3–5 working days within India and 7–10 internationally.</p><h2>Shipping costs</h2><p>Shipping is calculated at checkout. Free shipping applies above the threshold shown in your bag.</p>"),
     returns: page("returns", "Returns & exchanges", "<p>Return unworn items with their tags within 14 days of delivery for a refund or exchange.</p><h2>How to return</h2><ol><li>Contact us with your order number.</li><li>Pack the item in its original packaging.</li><li>We refund to the original payment method once it arrives.</li></ol>"),
     faq: page("faq", "Frequently asked questions", "<h2>How do I find my size?</h2><p>Use the size guide on each product page.</p><h2>Do you ship internationally?</h2><p>Yes — choose your country from the selector in the header.</p><h2>How do I care for my order?</h2><p>Each product page lists fibre content and care instructions.</p>"),

@@ -7,7 +7,7 @@ const env = {
   SHOPIFY_API_ORIGIN: "http://localhost:4010",
   SHOPIFY_STOREFRONT_ACCESS_TOKEN: "mock-token",
   NEXT_PUBLIC_SITE_URL: `http://localhost:${PORT}`,
-  NEXT_PUBLIC_BRAND_NAME: "Mysa Baby",
+  NEXT_PUBLIC_BRAND_NAME: "EAST SIDE",
   PORT: String(PORT),
   NEXT_PUBLIC_FREE_SHIPPING_THRESHOLDS: '{"INR":5000}',
   NEXT_PUBLIC_PAYMENT_METHODS: "UPI, Cards, Netbanking",

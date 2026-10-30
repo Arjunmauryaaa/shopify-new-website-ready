@@ -74,11 +74,11 @@ export const demoOverrides = {
   },
   socialFeed: {
     title: "On Instagram",
-    handle: "arjunta",
+    handle: "east-side",
     posts: [1, 2, 3, 4, 5, 6].map((n) => ({ image: `/demo/social-${n}.jpg`, href: `https://www.instagram.com/?demo=${n}`, alt: `Sample post ${n}` })),
   },
   footer: { social: [{ label: "Instagram", href: "https://www.instagram.com/" }] },
-  support: { email: "hello@arjunta.example", phone: "+91 00000 00000", hours: "Mon–Sat, 10:00–18:00 IST", address: "" },
+  support: { email: "hello@eastside.example", phone: "+91 00000 00000", hours: "Mon–Sat, 10:00–18:00 IST", address: "" },
   commerce: {
     promises: ["Free returns within 14 days", "Complimentary gift message"],
     sizeGuide: {

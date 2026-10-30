@@ -33,7 +33,7 @@ export type EditorialPanel = {
 
 import { demoOverrides } from "./demo";
 
-const name = process.env.NEXT_PUBLIC_BRAND_NAME || "Mysa Baby";
+const name = process.env.NEXT_PUBLIC_BRAND_NAME || "EAST SIDE";
 
 const base = {
   name,

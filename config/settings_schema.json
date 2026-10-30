@@ -1,8 +1,8 @@
 [
   {
     "name": "theme_info",
-    "theme_name": "Arjunta Editorial",
-    "theme_author": "Arjunta",
+    "theme_name": "EAST SIDE Editorial",
+    "theme_author": "EAST SIDE",
     "theme_version": "1.1.0",
     "theme_documentation_url": "https://shopify.dev/docs/storefronts/themes",
     "theme_support_url": "https://help.shopify.com/"
@@ -14,7 +14,7 @@
         "type": "text",
         "id": "site_name",
         "label": "Storefront name",
-        "default": "Mysa Baby"
+        "default": "EAST SIDE"
       },
       {
         "type": "color",

@@ -6,7 +6,8 @@
     <meta name="theme-color" content="{{ settings.background }}">
     <script>try{if(localStorage.getItem('arjunta-theme')==='dark'){document.documentElement.dataset.theme='dark';document.querySelector('meta[name="theme-color"]').content='#141413'}}catch(e){}</script>
     <link rel="canonical" href="{{ canonical_url }}">
-    <title>{{ page_title }}{% if current_tags %} - {{ current_tags | join: ', ' }}{% endif %}{% unless page_title contains shop.name %} - {{ shop.name }}{% endunless %}</title>
+    {% assign storefront_name = settings.site_name | default: shop.name %}
+    <title>{{ page_title }}{% if current_tags %} - {{ current_tags | join: ', ' }}{% endif %}{% unless page_title contains storefront_name %} - {{ storefront_name }}{% endunless %}</title>
     {% if page_description != blank %}<meta name="description" content="{{ page_description | escape }}">{% endif %}
     {% render 'seo-meta' %}
     <link rel="preconnect" href="https://fonts.googleapis.com">
