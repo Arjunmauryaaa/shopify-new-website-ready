@@ -1,4 +1,4 @@
-﻿{%- capture short_title -%}{% render 'product-short-title', product: product %}{%- endcapture -%}
+{%- capture short_title -%}{% render 'product-short-title', product: product %}{%- endcapture -%}
 {%- assign short_title = short_title | strip -%}
 {%- assign current = product.selected_or_first_available_variant -%}
 {%- assign guide = section.settings.size_guide_page -%}
@@ -62,6 +62,11 @@
       <div class="product-purchase-actions">
         <button class="button button-dark" type="submit" name="add" data-add-button{% unless current.available %} disabled{% endunless %}>{% if current.available %}Add to bag{% else %}Sold out{% endif %}</button>
         {%- if section.settings.show_express_checkout -%}<div class="product-express">{{ form | payment_button }}</div>{%- endif -%}
+        {%- if section.settings.show_express_page_link -%}
+          <a href="{{ product.url }}?view=express" class="button button-outline" style="text-align:center;width:100%;display:flex;align-items:center;justify-content:center">
+            {{ section.settings.express_page_label | default: 'Buy now & see recommendations' | escape }}
+          </a>
+        {%- endif -%}
       </div>
     {%- endform -%}
 
@@ -122,6 +127,8 @@
   "name": "Product details",
   "settings": [
     { "type": "checkbox", "id": "show_express_checkout", "label": "Show accelerated checkout button", "default": true },
+    { "type": "checkbox", "id": "show_express_page_link", "label": "Show 'Instant checkout with recommendations' button", "default": false },
+    { "type": "text", "id": "express_page_label", "label": "Instant checkout button label", "default": "Buy now & add recommendations" },
     { "type": "page", "id": "size_guide_page", "label": "Size guide page", "info": "Pick a page that holds your size or age chart. A Size guide button appears when one is chosen." }
   ]
 }
