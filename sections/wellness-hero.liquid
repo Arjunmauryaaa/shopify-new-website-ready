@@ -6,7 +6,7 @@
   <div class="wh-hero__inner">
     <div class="wh-hero__copy">
       {%- if section.settings.eyebrow != blank -%}<span class="pill">{{ section.settings.eyebrow | escape }}</span>{%- endif -%}
-      <h1>{{ section.settings.heading | strip_html: '' | escape }}</h1>
+      <h1>{{ section.settings.heading | strip_html | escape }}</h1>
       <p class="wh-hero__body">{{ section.settings.body | escape }}</p>
       <div class="wh-hero__actions">
         <a class="button button-dark" href="{{ cta_link }}">{{ section.settings.button_label | escape }}</a>
