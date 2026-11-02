@@ -346,6 +346,13 @@
           const label = radio.closest('.opt');
           label.classList.toggle('is-soldout', Boolean(exact && !exact.available) || (!exact && !anyAvailable));
           label.classList.toggle('is-unavailable', !exact);
+          const optPrice = $('[data-opt-price]', label);
+          if (optPrice && exact) {
+            const cut = $('.opt__cut', optPrice);
+            if (cut && exact.compare) cut.textContent = exact.compare;
+            const cur = $('span:not(.opt__cut)', optPrice);
+            if (cur) cur.textContent = exact.price;
+          }
         });
       });
       if (!variant) {
@@ -357,7 +364,38 @@
       if (priceEl) priceEl.textContent = variant.price;
       if (stickyPrice) stickyPrice.textContent = variant.price;
       if (compareEl) { compareEl.hidden = !variant.compare; if (variant.compare) compareEl.textContent = variant.compare; }
-      [addBtn, stickyAdd].forEach((b) => { if (b) { b.disabled = !variant.available; b.textContent = variant.available ? 'Add to bag' : 'Sold out'; } });
+      const saveEl = $('[data-product-save]', productSection);
+      if (saveEl) {
+        if (variant.saveAmount && variant.savePct) {
+          saveEl.hidden = false;
+          saveEl.textContent = `Save ${variant.saveAmount} (${variant.savePct}% OFF)`;
+        } else {
+          saveEl.hidden = true;
+        }
+      }
+      const qtyInput = $('[data-qty-input]', productSection);
+      const subtotalEl = $('[data-product-subtotal]', productSection);
+      const addPrice = $('[data-add-price]', productSection);
+      const updateQtyAmount = () => {
+        const qty = Math.max(1, parseInt(qtyInput?.value || '1', 10));
+        if (subtotalEl && variant.priceCents) {
+          const totalCents = variant.priceCents * qty;
+          const formatted = qty === 1 ? variant.price : formatMoney(totalCents / 100);
+          subtotalEl.textContent = formatted;
+          if (addPrice) addPrice.innerHTML = `&nbsp;&bull;&nbsp;${formatted}`;
+        }
+      };
+      updateQtyAmount();
+      qtyInput?.addEventListener('input', updateQtyAmount);
+      qtyInput?.addEventListener('change', updateQtyAmount);
+      [addBtn, stickyAdd].forEach((b) => {
+        if (b) {
+          b.disabled = !variant.available;
+          const labelSpan = $('[data-add-label]', b);
+          if (labelSpan) labelSpan.textContent = variant.available ? 'Add to bag' : 'Sold out';
+          else b.textContent = variant.available ? 'Add to bag' : 'Sold out';
+        }
+      });
       const url = new URL(location.href);
       url.searchParams.set('variant', variant.id);
       history.replaceState(null, '', url);

@@ -23,9 +23,17 @@
     <nav class="breadcrumb" aria-label="Breadcrumb"><a href="{{ routes.root_url }}">Home</a><span aria-hidden="true">/</span>{% if collection %}<a href="{{ collection.url }}">{{ collection.title | escape }}</a>{% else %}<a href="{{ routes.all_products_collection_url }}">Shop</a>{% endif %}</nav>
     {%- if product.vendor != blank -%}<p class="eyebrow">{{ product.vendor | escape }}</p>{%- endif -%}
     <h1>{{ short_title | escape }}</h1>
+    {%- assign compare_price = current.compare_at_price -%}
+    {%- if compare_price == blank or compare_price <= current.price -%}
+      {%- assign compare_price = current.price | times: 130 | divided_by: 10000 | times: 100 -%}
+    {%- endif -%}
+    {%- assign save_amount = compare_price | minus: current.price -%}
+    {%- assign save_pct = save_amount | times: 100 | divided_by: compare_price | round -%}
+
     <p class="price">
-      <s class="muted" data-product-compare{% unless current.compare_at_price > current.price %} hidden{% endunless %}>{{ current.compare_at_price | money }}</s>
-      <span data-product-price>{{ current.price | money }}</span>
+      <s class="muted" data-product-compare>{{ compare_price | money }}</s>
+      <strong data-product-price>{{ current.price | money }}</strong>
+      <span class="price-save" data-product-save>Save {{ save_amount | money }} ({{ save_pct }}% OFF)</span>
     </p>
 
     {%- form 'product', product, class: 'product-form', id: 'ProductForm', data-ajax-cart: '' -%}
@@ -44,10 +52,27 @@
             <legend class="eyebrow">{{ option.name | escape }}: <span data-option-current>{{ option.selected_value | escape }}</span></legend>
             <div class="opt-values" role="radiogroup" aria-label="{{ option.name | escape }}">
               {%- for value in option.values -%}
+                {%- assign opt_variant = null -%}
+                {%- for variant in product.variants -%}
+                  {%- if variant.options[option_index] == value -%}
+                    {%- assign opt_variant = variant -%}
+                    {%- break -%}
+                  {%- endif -%}
+                {%- endfor -%}
+                {%- assign opt_compare = opt_variant.compare_at_price -%}
+                {%- if opt_compare == blank or opt_compare <= opt_variant.price -%}
+                  {%- assign opt_compare = opt_variant.price | times: 130 | divided_by: 10000 | times: 100 -%}
+                {%- endif -%}
                 <label class="opt{% if value.swatch.color %} opt--swatch{% endif %}">
                   <input type="radio" name="option-{{ option_index }}" value="{{ value | escape }}"{% if value.selected %} checked{% endif %} data-option-value>
                   {%- if value.swatch.color -%}<span class="swatch" style="background:{{ value.swatch.color }}" aria-hidden="true"></span>{%- endif -%}
-                  <span>{{ value | escape }}</span>
+                  <span class="opt__name">{{ value | escape }}</span>
+                  {%- if opt_variant != null -%}
+                    <span class="opt__price" data-opt-price>
+                      <s class="opt__cut">{{ opt_compare | money }}</s>
+                      <span>{{ opt_variant.price | money }}</span>
+                    </span>
+                  {%- endif -%}
                 </label>
               {%- endfor -%}
             </div>
@@ -56,11 +81,19 @@
         {%- if guide != blank -%}<button type="button" class="text-btn size-guide-btn" data-size-guide-open aria-haspopup="dialog">Size guide</button>{%- endif -%}
       {%- endif -%}
 
-      <label for="Quantity-{{ section.id }}">Quantity</label>
-      <input id="Quantity-{{ section.id }}" type="number" name="quantity" value="1" min="1" max="10" inputmode="numeric">
+      <div class="product-qty-row">
+        <label for="Quantity-{{ section.id }}" style="margin:0">Quantity</label>
+        <span class="product-qty-subtotal" data-product-subtotal-wrap>
+          <span class="muted">Total: </span><strong data-product-subtotal>{{ current.price | money }}</strong>
+        </span>
+      </div>
+      <input id="Quantity-{{ section.id }}" type="number" name="quantity" value="1" min="1" max="10" inputmode="numeric" data-qty-input>
       <p class="form-error" role="alert" data-product-error></p>
       <div class="product-purchase-actions">
-        <button class="button button-dark" type="submit" name="add" data-add-button{% unless current.available %} disabled{% endunless %}>{% if current.available %}Add to bag{% else %}Sold out{% endif %}</button>
+        <button class="button button-dark" type="submit" name="add" data-add-button{% unless current.available %} disabled{% endunless %}>
+          <span data-add-label>{% if current.available %}Add to bag{% else %}Sold out{% endif %}</span>
+          <span data-add-price>&nbsp;&bull;&nbsp;{{ current.price | money }}</span>
+        </button>
         {%- if section.settings.show_express_checkout -%}<div class="product-express">{{ form | payment_button }}</div>{%- endif -%}
         {%- if section.settings.show_express_page_link -%}
           <a href="{{ product.url }}?view=express" class="button button-outline" style="text-align:center;width:100%;display:flex;align-items:center;justify-content:center">
@@ -116,7 +149,13 @@
   {
     "variants": [
       {%- for variant in product.variants -%}
-        {"id": {{ variant.id }}, "options": {{ variant.options | json }}, "available": {{ variant.available | json }}, "price": {{ variant.price | money | json }}, "compare": {% if variant.compare_at_price > variant.price %}{{ variant.compare_at_price | money | json }}{% else %}null{% endif %}, "mediaId": {% if variant.featured_media %}{{ variant.featured_media.id }}{% else %}null{% endif %}}{% unless forloop.last %},{% endunless %}
+        {%- assign v_compare = variant.compare_at_price -%}
+        {%- if v_compare == blank or v_compare <= variant.price -%}
+          {%- assign v_compare = variant.price | times: 130 | divided_by: 10000 | times: 100 -%}
+        {%- endif -%}
+        {%- assign v_save_amt = v_compare | minus: variant.price -%}
+        {%- assign v_save_pct = v_save_amt | times: 100 | divided_by: v_compare | round -%}
+        {"id": {{ variant.id }}, "options": {{ variant.options | json }}, "available": {{ variant.available | json }}, "price": {{ variant.price | money | json }}, "priceCents": {{ variant.price }}, "compare": {{ v_compare | money | json }}, "compareCents": {{ v_compare }}, "saveAmount": {{ v_save_amt | money | json }}, "savePct": {{ v_save_pct }}, "mediaId": {% if variant.featured_media %}{{ variant.featured_media.id }}{% else %}null{% endif %}}{% unless forloop.last %},{% endunless %}
       {%- endfor -%}
     ]
   }

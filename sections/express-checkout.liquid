@@ -9,8 +9,11 @@
 {%- assign storefront_name = settings.site_name | default: shop.name -%}
 {%- assign cta_label = section.settings.cta_label | default: 'Pay securely' -%}
 {%- assign highlights = product.metafields.custom.highlights.value -%}
-{%- assign saving = 0 -%}
-{%- if current.compare_at_price > current.price -%}{%- assign saving = current.compare_at_price | minus: current.price | times: 100 | divided_by: current.compare_at_price -%}{%- endif -%}
+{%- assign current_compare = current.compare_at_price -%}
+{%- if current_compare == blank or current_compare <= current.price -%}
+  {%- assign current_compare = current.price | times: 130 | divided_by: 10000 | times: 100 -%}
+{%- endif -%}
+{%- assign saving = current_compare | minus: current.price | times: 100 | divided_by: current_compare | round -%}
 
 <header class="ex-top">
   <div class="ex-top__inner">
@@ -55,8 +58,8 @@
     </div>
     <div class="ex__price">
       <strong data-ex-price>{{ current.price | money }}</strong>
-      <s data-ex-compare{% unless saving > 0 %} hidden{% endunless %}>{{ current.compare_at_price | money }}</s>
-      <span class="ex__save" data-ex-save{% unless saving > 0 %} hidden{% endunless %}>You save {{ saving }}%</span>
+      <s data-ex-compare>{{ current_compare | money }}</s>
+      <span class="ex__save" data-ex-save>You save {{ saving }}%</span>
     </div>
 
     {%- if highlights != blank -%}

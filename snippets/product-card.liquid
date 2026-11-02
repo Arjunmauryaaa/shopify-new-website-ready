@@ -9,8 +9,13 @@
       {%- else -%}
         <span class="image-placeholder">{{ card_title }}</span>
       {%- endif -%}
+      {%- assign card_compare = product.compare_at_price -%}
+      {%- if card_compare == blank or card_compare <= product.price -%}
+        {%- assign card_compare = product.price | times: 130 | divided_by: 10000 | times: 100 -%}
+      {%- endif -%}
+      {%- assign card_save_pct = card_compare | minus: product.price | times: 100 | divided_by: card_compare | round -%}
       {%- if product.available == false -%}<span class="tag">Sold out</span>
-      {%- elsif product.compare_at_price > product.price -%}<span class="tag tag--sale">Sale</span>{%- endif -%}
+      {%- else -%}<span class="tag tag--sale">{{ card_save_pct }}% OFF</span>{%- endif -%}
     </a>
     <button class="wish" type="button" data-wish="{{ product.handle }}" aria-pressed="false" aria-label="Save {{ card_title | strip | escape }}">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"/></svg>
@@ -19,7 +24,13 @@
       <button class="quick-add" type="button" data-quick-add="{{ product.selected_or_first_available_variant.id }}">Quick add</button>
     {%- endif -%}
   </div>
-  <div class="product-meta"><a href="{{ product.url }}">{{ card_title }}</a><span>{% if product.price_varies %}From {% endif %}{{ product.price | money }}{% if product.compare_at_price > product.price %} <s class="muted">{{ product.compare_at_price | money }}</s>{% endif %}</span></div>
+  <div class="product-meta">
+    <a href="{{ product.url }}">{{ card_title }}</a>
+    <span class="product-price">
+      <s class="muted">{{ card_compare | money }}</s>
+      <strong>{% if product.price_varies %}From {% endif %}{{ product.price | money }}</strong>
+    </span>
+  </div>
   {%- for option in product.options_with_values -%}
     {%- assign option_name = option.name | downcase -%}
     {%- if option_name contains 'colo' and option.values.size > 1 -%}
