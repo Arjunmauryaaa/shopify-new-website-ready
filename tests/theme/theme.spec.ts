@@ -96,11 +96,11 @@ test.describe("search", () => {
     await page.locator("[data-search-open]:visible").first().click();
     const dialog = page.getByRole("dialog", { name: "Search" });
     await expect(dialog.getByRole("heading", { name: "Browse" })).toBeVisible();
-    await dialog.getByLabel("Search products").fill("vitamin c");
+    await dialog.getByLabel("Search products").fill("glow");
     await expect(dialog.locator(".search-list a")).toHaveCount(1);
     await expect(dialog.locator(".search-list__price")).toContainText("1,299");
     await dialog.getByLabel("Search products").press("Enter");
-    await page.waitForURL(/\/search\?q=vitamin/);
+    await page.waitForURL(/\/search\?q=glow/);
     await page.locator("[data-search-open]:visible").first().click();
     await expect(page.getByRole("heading", { name: "Recent searches" })).toBeVisible();
   });
@@ -132,8 +132,8 @@ test.describe("collection filters", () => {
 test.describe("saved items", () => {
   test("hearting a product keeps it on the Saved page", async ({ page }) => {
     await page.goto("/collections/all");
-    await page.getByRole("button", { name: /^Save Vitamin C Glow Serum/ }).click({ force: true });
-    await expect(page.getByRole("button", { name: /^Save Vitamin C Glow Serum/ })).toHaveAttribute("aria-pressed", "true");
+    await page.getByRole("button", { name: /^Save Glow Face Serum/ }).click({ force: true });
+    await expect(page.getByRole("button", { name: /^Save Glow Face Serum/ })).toHaveAttribute("aria-pressed", "true");
     await page.goto("/pages/saved");
     await expect(page.locator("[data-saved-grid] .product-card")).toHaveCount(1);
   });

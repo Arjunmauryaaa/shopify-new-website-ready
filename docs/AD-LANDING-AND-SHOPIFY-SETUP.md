@@ -43,6 +43,6 @@ Meta, Google and Indian law (Drugs and Magic Remedies Act, ASCI guidelines) rest
 - All styling is in `assets/wellness.css` (loaded last); change colours in the `:root` block at the top.
 - The new sections are Wellness hero, Shop by need, Why choose us, Video, Customer reviews, FAQ and Health disclaimer.
 - Preview locally with `npm run theme:preview`, then open `/products/soft-jersey-romper?view=express`. This is an approximation; confirm on a real Shopify theme preview.
-## Dummy media
+## Sample media
 
-Run `node scripts/generate-wellness-assets.mjs` to regenerate the placeholder images and video (assets/wh-*.jpg, wh-demo-video.webm). Replace them in the theme editor with real photos and videos.
+The hero, benefits photo, video and preview product images are free Pexels stock (see docs/ASSET-CREDITS.md). Replace them in the theme editor with your own photos and videos before launch.

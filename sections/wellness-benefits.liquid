@@ -4,7 +4,7 @@
       {%- if section.settings.image != blank -%}
         {{ section.settings.image | image_url: width: 1200 | image_tag: widths: '500, 800, 1200', sizes: '(min-width: 1000px) 42vw, 92vw', loading: 'lazy', alt: section.settings.image.alt | default: section.settings.heading }}
       {%- else -%}
-        <img src="{{ 'wh-benefits.jpg' | asset_url }}" width="1200" height="1500" alt="Dummy health and personal care products" loading="lazy">
+        <img src="{{ 'wh-benefits.jpg' | asset_url }}" width="1200" height="1500" alt="Hand holding a skincare dropper bottle" loading="lazy">
       {%- endif -%}
     </div>
     <div class="wb__copy">

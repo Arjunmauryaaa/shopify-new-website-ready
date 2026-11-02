@@ -1,6 +1,6 @@
 {%- comment -%}
   Reel-style video block. Upload a video (best: vertical 9:16, same creative as your ads) or paste a YouTube / Vimeo link.
-  Until a video is added it plays a dummy placeholder clip (assets/wh-demo-video.webm).
+  Until a video is added it plays a sample stock clip (assets/wh-demo-video.mp4).
 {%- endcomment -%}
 <section class="wv{% if section.settings.wide %} wv--wide{% endif %}" aria-label="{{ section.settings.heading | escape }}">
   <div class="wv__copy">
@@ -15,7 +15,7 @@
     {%- elsif section.settings.video_url != blank -%}
       {{ section.settings.video_url | external_video_tag }}
     {%- else -%}
-      <video controls muted loop playsinline preload="metadata" poster="{{ 'wh-product-1.jpg' | asset_url }}" aria-label="Sample video"><source src="{{ 'wh-demo-video.webm' | asset_url }}" type="video/webm"></video>
+      <video controls muted loop playsinline preload="metadata" aria-label="Sample skincare video"><source src="{{ 'wh-demo-video.mp4' | asset_url }}" type="video/mp4"></video>
     {%- endif -%}
   </div>
 </section>

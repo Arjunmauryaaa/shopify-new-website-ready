@@ -21,14 +21,14 @@ const COLORS = { Ivory: "#EFE9DC", Sand: "#D2C3A8", Sage: "#A0A68A", Blush: "#E1
 const SIZES = ["30 ml", "50 ml", "100 ml", "200 ml"];
 const ART = ["linen-overshirt-ivory", "cashmere-crew-knit-camel", "silk-slip-dress-clay", "wide-leg-wool-trouser-stone", "merino-scarf-blush", "pleated-midi-skirt-olive", "cotton-poplin-shirt-sky", "ribbed-knit-tank-clay"];
 const NAMES = [
-  ["ribbed-cotton-bodysuit", "Vitamin C Glow Serum", 129900, ["Ivory", "Sand", "Sage"]],
+  ["ribbed-cotton-bodysuit", "Glow Face Serum", 129900, ["Ivory", "Sand", "Sage"]],
   ["knit-baby-cardigan", "Daily Barrier Moisturiser", 249900, ["Oat", "Blush"]],
-  ["soft-jersey-romper", "Daily Multivitamin Tub", 179900, ["Sky", "Ivory", "Sage"]],
-  ["muslin-swaddle-blanket", "Mineral Sunscreen SPF 50", 149900, ["Ivory", "Sand"]],
+  ["soft-jersey-romper", "Serum and Cream Set", 179900, ["Sky", "Ivory", "Sage"]],
+  ["muslin-swaddle-blanket", "Mineral Sunscreen", 149900, ["Ivory", "Sand"]],
   ["knotted-baby-beanie", "Nourishing Hair Oil", 69900, ["Sand", "Blush", "Sage", "Sky"]],
-  ["footed-sleepsuit", "Herbal Bath Bar", 219900, ["Ivory", "Sky"]],
-  ["wrap-cardigan", "Hydrating Face Serum", 239900, ["Oat"]],
-  ["everyday-bib-set", "Night Repair Cream", 89900, ["Ivory"]],
+  ["footed-sleepsuit", "Herbal Bath Bars", 219900, ["Ivory", "Sky"]],
+  ["wrap-cardigan", "Honey Repair Balm", 239900, ["Oat"]],
+  ["everyday-bib-set", "Cleansing Soap Trio", 89900, ["Ivory"]],
 ];
 let variantId = 9000;
 const products = NAMES.map(([handle, title, price, colors], i) => {

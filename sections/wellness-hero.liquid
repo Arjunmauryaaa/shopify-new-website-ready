@@ -25,7 +25,7 @@
         {%- elsif section.settings.image != blank -%}
           {{ section.settings.image | image_url: width: 1400 | image_tag: widths: '500, 800, 1100, 1400', sizes: '(min-width: 1000px) 46vw, 92vw', loading: 'eager', fetchpriority: 'high', alt: section.settings.image.alt | default: section.settings.eyebrow }}
         {%- else -%}
-          <img src="{{ 'wh-hero.jpg' | asset_url }}" width="1200" height="1400" alt="Dummy health and personal care products" loading="eager" fetchpriority="high">
+          <img src="{{ 'wh-hero.jpg' | asset_url }}" width="1200" height="1400" alt="Hands holding skincare products" loading="eager" fetchpriority="high">
         {%- endif -%}
       </div>
       {%- if section.settings.chip_1_title != blank -%}
