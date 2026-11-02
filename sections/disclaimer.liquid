@@ -1,0 +1,10 @@
+{%- if section.settings.text != blank -%}<p class="disclaimer">{{ section.settings.text | escape }}</p>{%- endif -%}
+{% schema %}
+{
+  "name": "Health disclaimer",
+  "settings": [
+    { "type": "textarea", "id": "text", "label": "Disclaimer", "default": "Information on this site is for general wellbeing and is not medical advice. Our products are not intended to diagnose, treat, cure or prevent any disease. Please consult a qualified healthcare professional before use, especially if you are pregnant, nursing, taking medication or have a medical condition. Individual results may vary." }
+  ],
+  "presets": [{ "name": "Health disclaimer" }]
+}
+{% endschema %}

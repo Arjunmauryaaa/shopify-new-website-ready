@@ -1,0 +1,39 @@
+{%- comment -%} Only real customer reviews belong here. Renders nothing for shoppers until at least one review is added. {%- endcomment -%}
+{%- if section.blocks.size > 0 or request.design_mode -%}
+<section class="wr">
+  <div class="section-heading"><div><p class="eyebrow">{{ section.settings.eyebrow | escape }}</p><h2>{{ section.settings.title | escape }}</h2></div></div>
+  <div class="wr__grid">
+    {%- for block in section.blocks -%}
+      <figure class="wr__card" style="margin:0" {{ block.shopify_attributes }}>
+        <div class="wr__stars" role="img" aria-label="{{ block.settings.stars }} out of 5 stars">{% for i in (1..block.settings.stars) %}&#9733;{% endfor %}</div>
+        <blockquote>{{ block.settings.quote | escape }}</blockquote>
+        <figcaption class="wr__who">{{ block.settings.name | escape }}{% if block.settings.detail != blank %}<small>{{ block.settings.detail | escape }}</small>{% endif %}</figcaption>
+      </figure>
+    {%- endfor -%}
+    {%- if section.blocks.size == 0 -%}<p class="empty-note">Add a customer review block to show reviews here.</p>{%- endif -%}
+  </div>
+</section>
+{%- endif -%}
+{% schema %}
+{
+  "name": "Customer reviews",
+  "max_blocks": 6,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Kind words" },
+    { "type": "text", "id": "title", "label": "Title", "default": "What our customers say" }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Review",
+      "settings": [
+        { "type": "range", "id": "stars", "label": "Stars", "min": 1, "max": 5, "step": 1, "default": 5 },
+        { "type": "textarea", "id": "quote", "label": "Review (use only real, permitted reviews)" },
+        { "type": "text", "id": "name", "label": "Name", "default": "Customer name" },
+        { "type": "text", "id": "detail", "label": "Detail (city, verified buyer)", "default": "Verified buyer" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Customer reviews" }]
+}
+{% endschema %}

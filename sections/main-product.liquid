@@ -65,12 +65,17 @@
       </div>
     {%- endform -%}
 
+    <ul class="pdp-assure" aria-label="Our promises">
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10.5" width="14" height="9.5" rx="2"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg>Secure payment</li>
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.6-5.9M4 4.5v4h4"/></svg>Easy returns</li>
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6.5h11v9H3zM14 10h4l3 3v2.5h-7z"/><circle cx="7.5" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg>Tracked delivery</li>
+    </ul>
     <div class="product-promise">
       <span>Checkout powered by Shopify</span>
       {%- if settings.delivery_note != blank -%}<span>{{ settings.delivery_note | escape }}</span>{%- else -%}<span>Shipping options shown at checkout</span>{%- endif -%}
     </div>
     <div class="product-accordions">
-      {%- if product.description != blank -%}<details open><summary>Details &amp; care</summary><div class="product-accordion-content rte">{{ product.description }}</div></details>{%- endif -%}
+      {%- if product.description != blank -%}<details open><summary>Details &amp; how to use</summary><div class="product-accordion-content rte">{{ product.description }}</div></details>{%- endif -%}
       <details><summary>Shipping &amp; returns</summary><div class="product-accordion-content">Review the <a href="/policies/shipping-policy">shipping policy</a> and <a href="/policies/refund-policy">refund policy</a> before ordering.</div></details>
     </div>
     <p class="product-payment-note">Fast payment options appear when enabled in your Shopify payment settings.</p>

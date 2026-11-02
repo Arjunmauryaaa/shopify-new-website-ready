@@ -18,35 +18,35 @@ const exists = (...p) => fs.existsSync(path.join(ROOT, ...p));
 /* ---------------------------------------------------------------- sample data */
 const MONEY = (cents) => `Rs. ${(cents / 100).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 const COLORS = { Ivory: "#EFE9DC", Sand: "#D2C3A8", Sage: "#A0A68A", Blush: "#E1C6BB", Sky: "#A8BBCA", Oat: "#D6C6A6" };
-const SIZES = ["Newborn", "0-3M", "3-6M", "6-12M"];
+const SIZES = ["30 ml", "50 ml", "100 ml", "200 ml"];
 const ART = ["linen-overshirt-ivory", "cashmere-crew-knit-camel", "silk-slip-dress-clay", "wide-leg-wool-trouser-stone", "merino-scarf-blush", "pleated-midi-skirt-olive", "cotton-poplin-shirt-sky", "ribbed-knit-tank-clay"];
 const NAMES = [
-  ["ribbed-cotton-bodysuit", "Ribbed Cotton Bodysuit", 129900, ["Ivory", "Sand", "Sage"]],
-  ["knit-baby-cardigan", "Knit Baby Cardigan", 249900, ["Oat", "Blush"]],
-  ["soft-jersey-romper", "Soft Jersey Romper", 179900, ["Sky", "Ivory", "Sage"]],
-  ["muslin-swaddle-blanket", "Muslin Swaddle Blanket", 149900, ["Ivory", "Sand"]],
-  ["knotted-baby-beanie", "Knotted Baby Beanie", 69900, ["Sand", "Blush", "Sage", "Sky"]],
-  ["footed-sleepsuit", "Footed Sleepsuit", 219900, ["Ivory", "Sky"]],
-  ["wrap-cardigan", "Wrap Cardigan", 239900, ["Oat"]],
-  ["everyday-bib-set", "Everyday Bib Set (3 pack)", 89900, ["Ivory"]],
+  ["ribbed-cotton-bodysuit", "Vitamin C Glow Serum", 129900, ["Ivory", "Sand", "Sage"]],
+  ["knit-baby-cardigan", "Daily Barrier Moisturiser", 249900, ["Oat", "Blush"]],
+  ["soft-jersey-romper", "Daily Multivitamin Tub", 179900, ["Sky", "Ivory", "Sage"]],
+  ["muslin-swaddle-blanket", "Mineral Sunscreen SPF 50", 149900, ["Ivory", "Sand"]],
+  ["knotted-baby-beanie", "Nourishing Hair Oil", 69900, ["Sand", "Blush", "Sage", "Sky"]],
+  ["footed-sleepsuit", "Herbal Bath Bar", 219900, ["Ivory", "Sky"]],
+  ["wrap-cardigan", "Hydrating Face Serum", 239900, ["Oat"]],
+  ["everyday-bib-set", "Night Repair Cream", 89900, ["Ivory"]],
 ];
 let variantId = 9000;
 const products = NAMES.map(([handle, title, price, colors], i) => {
   const variants = [];
   const opts = i === 7 ? [] : SIZES;
   for (const color of colors) for (const size of opts.length ? opts : [null]) {
-    const soldOut = i === 2 && color === "Sky" && size === "0-3M";
-    variants.push({ id: variantId++, options: [size, colors.length > 1 ? color : null].filter(Boolean), available: !soldOut, price: price + (size === "6-12M" ? 10000 : 0), compare_at_price: i === 5 ? price + 40000 : 0 });
+    const soldOut = i === 2 && color === "Sky" && size === "50 ml";
+    variants.push({ id: variantId++, options: [size, colors.length > 1 ? color : null].filter(Boolean), available: !soldOut, price: price + (size === "200 ml" ? 10000 : 0), compare_at_price: i === 5 ? price + 40000 : 0 });
   }
   if (i === 7) variants[0].options = ["Default Title"];
-  const art = `/demo/p-${ART[i]}.jpg`;
-  const art2 = `/demo/p-${ART[(i + 3) % ART.length]}.jpg`;
+  const art = `/assets/wh-product-${i + 1}.jpg`;
+  const art2 = `/assets/wh-product-${((i + 3) % 8) + 1}.jpg`;
   const optionDefs = i === 7 ? [{ name: "Title", values: ["Default Title"] }] : [{ name: "Size", values: SIZES }, ...(colors.length > 1 ? [{ name: "Color", values: colors }] : [])];
-  return { id: 100 + i, handle, title: `${title} Sample Newborn Baby Unisex`, vendor: "Sample brand", price: Math.min(...variants.map((v) => v.price)), price_varies: new Set(variants.map((v) => v.price)).size > 1, compare_at_price: variants[0].compare_at_price, available: variants.some((v) => v.available), variants, optionDefs, colors, hasOnlyDefault: i === 7, images: [{ src: art, alt: title }, { src: art2, alt: `${title} detail` }, { src: `/demo/p-${ART[(i + 5) % ART.length]}.jpg`, alt: `${title} lifestyle` }], description: `<p>Sample description for ${title}. Replace this with your own product copy in Shopify admin.</p><p>Care: machine wash cool. (Sample text.)</p>`, type: i % 2 ? "Knitwear" : "Basics" };
+  return { id: 100 + i, handle, title: `${title} Sample Health Care`, vendor: "Sample brand", price: Math.min(...variants.map((v) => v.price)), price_varies: new Set(variants.map((v) => v.price)).size > 1, compare_at_price: variants[0].compare_at_price, available: variants.some((v) => v.available), variants, optionDefs, colors, hasOnlyDefault: i === 7, images: [{ src: art, alt: title }, { src: art2, alt: `${title} detail` }, { src: `/demo/p-${ART[(i + 5) % ART.length]}.jpg`, alt: `${title} lifestyle` }], description: `<p>Sample description for ${title}. Replace this with your own product copy in Shopify admin.</p><p>Care: machine wash cool. (Sample text.)</p>`, type: i % 2 ? "Knitwear" : "Basics" };
 });
 // Short titles are metafield-driven in the theme; the preview strips the filler words for display.
 const shapeProduct = (p) => {
-  const media = p.images.map((im, k) => ({ id: p.id * 10 + k, media_type: "image", src: im.src, alt: im.alt }));
+  const media = p.images.map((im, k) => ({ id: p.id * 10 + k, media_type: "image", src: im.src, alt: im.alt, preview_image: { src: im.src } }));
   const options_with_values = p.optionDefs.map((o) => ({
     name: o.name,
     selected_value: o.values[0],
@@ -56,7 +56,7 @@ const shapeProduct = (p) => {
   const first = variants.find((v) => v.available) || variants[0];
   return {
     ...p, url: `/products/${p.handle}`, handle: p.handle, media, images: media.map((m) => ({ ...m, url: m.src })), featured_image: media[0], featured_media: media[0],
-    variants, selected_or_first_available_variant: first, has_only_default_variant: p.hasOnlyDefault, options_with_values, options: p.optionDefs.map((o) => o.name), object_type: "product", metafields: { custom: { short_title: { value: p.title.replace(/ Sample Newborn.*$/, "") } } },
+    variants, selected_or_first_available_variant: first, has_only_default_variant: p.hasOnlyDefault, options_with_values, options: p.optionDefs.map((o) => o.name), object_type: "product", metafields: { custom: { short_title: { value: p.title.replace(/ Sample Health Care$/, "") } } },
   };
 };
 const shaped = products.map(shapeProduct);
@@ -227,7 +227,7 @@ async function renderSection(type, id, settingValues, parentCtx, blockData = nul
 /* ---------------------------------------------------------------- page rendering */
 function baseGlobals(url, extra = {}) {
   return {
-    shop: { name: "Sample Store", currency: "INR", url: `http://localhost:${PORT}`, description: "Sample store for the theme preview" },
+    shop: { name: "Sample Store", currency: "INR", money_format: "Rs. {{amount}}", policies: [], enabled_payment_types: [], url: `http://localhost:${PORT}`, description: "Sample store for the theme preview" },
     settings: globalSettings,
     request: { locale: { iso_code: "en" } },
     routes: { root_url: "/", cart_url: "/cart", cart_add_url: "/cart/add", cart_change_url: "/cart/change", cart_update_url: "/cart/update", search_url: "/search", predictive_search_url: "/search/suggest", product_recommendations_url: "/recommendations/products", all_products_collection_url: "/collections/all", account_url: "/account" },
@@ -239,7 +239,7 @@ function baseGlobals(url, extra = {}) {
 
 async function renderTemplate(templateName, url, extra = {}) {
   const jsonPath = path.join(ROOT, "templates", `${templateName}.json`);
-  const globals = baseGlobals(url, { template: { name: templateName.split(".")[0] }, ...extra });
+  const globals = baseGlobals(url, { template: { name: templateName.split(".")[0], suffix: templateName.split(".")[1] || "" }, ...extra });
   const ctx = { environments: globals };
   let body = "";
   if (fs.existsSync(jsonPath)) {
@@ -308,6 +308,8 @@ http.createServer(async (req, res) => {
       } catch (e) { return json(res, { status: e.status || 422, message: "Cart Error", description: e.message }, e.status || 422); }
       return json(res, { ok: true, sections: await cartSections(b.sections, url) });
     }
+    if (p === "/cart/clear.js" && req.method === "POST") { cartState.items = []; return json(res, cartObject()); }
+    if (p === "/checkout") return send(res, 200, "text/html", "<p>Shopify secure checkout would open here. Items: " + cartState.items.map((l) => l.handle + " x" + l.quantity).join(", ") + "</p>");
     if (p === "/cart/change.js" && req.method === "POST") {
       const b = await body(req);
       const line = cartState.items[Number(b.line) - 1];
@@ -325,13 +327,15 @@ http.createServer(async (req, res) => {
     if (p === "/search/suggest.json") {
       const q = (url.searchParams.get("q") || "").toLowerCase();
       const hits = shaped.filter((x) => x.title.toLowerCase().includes(q)).slice(0, 6);
-      return json(res, { resources: { results: { products: hits.map((x) => ({ id: x.id, title: x.title.replace(/ Sample Newborn.*$/, ""), handle: x.handle, url: x.url, price: (x.price / 100).toFixed(2), available: x.available, featured_image: { url: x.featured_image.src } })), collections: q.length > 2 && "knit".includes(q.slice(0, 4)) ? [{ title: "Knitwear", url: "/collections/knitwear" }] : [] } } });
+      return json(res, { resources: { results: { products: hits.map((x) => ({ id: x.id, title: x.title.replace(/ Sample Health Care$/, ""), handle: x.handle, url: x.url, price: (x.price / 100).toFixed(2), available: x.available, featured_image: { url: x.featured_image.src } })), collections: q.length > 2 && "knit".includes(q.slice(0, 4)) ? [{ title: "Knitwear", url: "/collections/knitwear" }] : [] } } });
     }
     if (p === "/recommendations/products") {
       const id = Number(url.searchParams.get("product_id"));
       const others = shaped.filter((x) => x.id !== id).slice(0, 4);
       const globals = baseGlobals(url, { recommendations: { performed: true, products_count: others.length, products: others } });
-      return send(res, 200, "text/html", await renderSection("product-recommendations", "product-recommendations", {}, { environments: globals }));
+      const sid = url.searchParams.get("section_id") || "product-recommendations";
+      if (sid === "express-recommendations" && url.searchParams.get("intent") === "complementary") return send(res, 200, "text/html", "");
+      return send(res, 200, "text/html", await renderSection(sid, sid, {}, { environments: globals }));
     }
 
     let m;
@@ -356,6 +360,7 @@ http.createServer(async (req, res) => {
         const globals = baseGlobals(url, { product });
         return send(res, 200, "text/html", await engine.parseAndRender("{% render 'product-card', product: product %}", globals, { globals }));
       }
+      if (url.searchParams.get("view") === "express") return send(res, 200, "text/html", await renderTemplate("product.express", url, { product, page_title: product.metafields.custom.short_title.value }));
       return send(res, 200, "text/html", await renderTemplate("product", url, { product, page_title: product.metafields.custom.short_title.value }));
     }
     if (p === "/cart") return send(res, 200, "text/html", await renderTemplate("cart", url));

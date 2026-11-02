@@ -1,0 +1,37 @@
+{%- comment -%}
+  Reel-style video block. Upload a video (best: vertical 9:16, same creative as your ads) or paste a YouTube / Vimeo link.
+  Until a video is added it plays a dummy placeholder clip (assets/wh-demo-video.webm).
+{%- endcomment -%}
+<section class="wv{% if section.settings.wide %} wv--wide{% endif %}" aria-label="{{ section.settings.heading | escape }}">
+  <div class="wv__copy">
+    <p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>
+    <h2>{{ section.settings.heading | escape }}</h2>
+    <p>{{ section.settings.body | escape }}</p>
+    {%- if section.settings.button_label != blank -%}<a class="button button-dark" href="{{ section.settings.button_link | default: routes.all_products_collection_url }}">{{ section.settings.button_label | escape }}</a>{%- endif -%}
+  </div>
+  <div class="wv__frame">
+    {%- if section.settings.video != blank -%}
+      {{ section.settings.video | video_tag: controls: true, muted: true, playsinline: true, preload: 'none', image_size: '720x1280' }}
+    {%- elsif section.settings.video_url != blank -%}
+      {{ section.settings.video_url | external_video_tag }}
+    {%- else -%}
+      <video controls muted loop playsinline preload="metadata" poster="{{ 'wh-product-1.jpg' | asset_url }}" aria-label="Sample video"><source src="{{ 'wh-demo-video.webm' | asset_url }}" type="video/webm"></video>
+    {%- endif -%}
+  </div>
+</section>
+{% schema %}
+{
+  "name": "Video",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "See it in action" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Simple, daily self-care" },
+    { "type": "textarea", "id": "body", "label": "Text", "default": "A short look at how our products fit into an everyday routine." },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Shop now" },
+    { "type": "url", "id": "button_link", "label": "Button link" },
+    { "type": "video", "id": "video", "label": "Uploaded video" },
+    { "type": "video_url", "id": "video_url", "label": "YouTube or Vimeo link", "accept": ["youtube", "vimeo"] },
+    { "type": "checkbox", "id": "wide", "label": "Wide (16:9) instead of vertical", "default": false }
+  ],
+  "presets": [{ "name": "Video" }]
+}
+{% endschema %}

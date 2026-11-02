@@ -10,18 +10,18 @@
 {
   "current": {
     "site_name": "EAST SIDE",
-    "background": "#ffffff",
-    "text": "#171715",
-    "muted": "#686661",
-    "line": "#dad8d2"
+    "background": "#fbfaf6",
+    "text": "#16302c",
+    "muted": "#566663",
+    "line": "#dfe6df"
   },
   "presets": {
     "Default": {
       "site_name": "EAST SIDE",
-      "background": "#ffffff",
-      "text": "#171715",
-      "muted": "#686661",
-      "line": "#dad8d2"
+      "background": "#fbfaf6",
+      "text": "#16302c",
+      "muted": "#566663",
+      "line": "#dfe6df"
     }
   }
 }

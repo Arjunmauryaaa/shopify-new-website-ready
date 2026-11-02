@@ -41,7 +41,7 @@ test.describe("bag drawer", () => {
 
   test("a sold-out variant cannot be added and says so", async ({ page }) => {
     await page.goto(ROMPER);
-    await page.locator(".opt", { hasText: "0-3M" }).click();
+    await page.locator(".opt", { hasText: "50 ml" }).click();
     await expect(page.locator("[data-add-button]")).toBeDisabled();
     await expect(page.locator("[data-add-button]")).toHaveText("Sold out");
   });
@@ -60,10 +60,10 @@ test.describe("product page", () => {
   test("option buttons pick the variant, update price and mark unavailable sizes", async ({ page }) => {
     await page.goto(ROMPER);
     await expect(page.locator("[data-product-price]")).toHaveText("Rs. 1,799.00");
-    await page.locator(".opt", { hasText: "6-12M" }).click();
+    await page.locator(".opt", { hasText: "200 ml" }).click();
     await expect(page.locator("[data-product-price]")).toHaveText("Rs. 1,899.00");
     await expect(page).toHaveURL(/variant=/);
-    await expect(page.locator(".opt", { hasText: "0-3M" })).toHaveClass(/is-soldout/);
+    await expect(page.locator(".opt", { hasText: "50 ml" })).toHaveClass(/is-soldout/);
   });
 
   test("full-screen viewer zooms in and out", async ({ page }) => {
@@ -79,7 +79,7 @@ test.describe("product page", () => {
 
   test("related products load and carry saved-item buttons", async ({ page }) => {
     await page.goto(ROMPER);
-    await expect(page.getByRole("heading", { name: "You may also like" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Complete your routine" })).toBeVisible();
     await expect(page.locator(".recs .product-card")).toHaveCount(4);
   });
 
@@ -96,11 +96,11 @@ test.describe("search", () => {
     await page.locator("[data-search-open]:visible").first().click();
     const dialog = page.getByRole("dialog", { name: "Search" });
     await expect(dialog.getByRole("heading", { name: "Browse" })).toBeVisible();
-    await dialog.getByLabel("Search products").fill("rib");
+    await dialog.getByLabel("Search products").fill("vitamin c");
     await expect(dialog.locator(".search-list a")).toHaveCount(1);
     await expect(dialog.locator(".search-list__price")).toContainText("1,299");
     await dialog.getByLabel("Search products").press("Enter");
-    await page.waitForURL(/\/search\?q=rib/);
+    await page.waitForURL(/\/search\?q=vitamin/);
     await page.locator("[data-search-open]:visible").first().click();
     await expect(page.getByRole("heading", { name: "Recent searches" })).toBeVisible();
   });
@@ -132,8 +132,8 @@ test.describe("collection filters", () => {
 test.describe("saved items", () => {
   test("hearting a product keeps it on the Saved page", async ({ page }) => {
     await page.goto("/collections/all");
-    await page.getByRole("button", { name: /^Save Ribbed Cotton Bodysuit/ }).click({ force: true });
-    await expect(page.getByRole("button", { name: /^Save Ribbed Cotton Bodysuit/ })).toHaveAttribute("aria-pressed", "true");
+    await page.getByRole("button", { name: /^Save Vitamin C Glow Serum/ }).click({ force: true });
+    await expect(page.getByRole("button", { name: /^Save Vitamin C Glow Serum/ })).toHaveAttribute("aria-pressed", "true");
     await page.goto("/pages/saved");
     await expect(page.locator("[data-saved-grid] .product-card")).toHaveCount(1);
   });
@@ -177,4 +177,26 @@ test.describe("accessibility (axe, serious and critical only)", () => {
       expect(bad.map((v) => `${v.id}: ${v.nodes.slice(0, 3).map((n) => n.target.join(" ")).join(" | ")}`)).toEqual([]);
     });
   }
+});
+
+test.describe("ad checkout page", () => {
+  const EXPRESS = "/products/soft-jersey-romper?view=express";
+
+  test("hides site navigation and shows recommended products below the order", async ({ page }) => {
+    await page.goto(EXPRESS);
+    await expect(page.locator(".site-header")).toHaveCount(0);
+    await expect(page.locator(".bottom-nav")).toHaveCount(0);
+    await expect(page.getByRole("button", { name: "Pay securely" }).first()).toBeVisible();
+    await expect(page.locator(".ex-more .up")).toHaveCount(4);
+  });
+
+  test("adds a recommended product to the order and sends both items to checkout", async ({ page }) => {
+    await page.goto(EXPRESS);
+    await page.locator("[data-up-add]").first().click();
+    await expect(page.locator(".ex__line")).toHaveCount(2);
+    await page.locator("[data-ex-pay]").click();
+    await page.waitForURL("**/checkout");
+    await expect(page.locator("body")).toContainText("soft-jersey-romper x1");
+    await expect(page.locator("body")).toContainText("ribbed-cotton-bodysuit x1");
+  });
 });

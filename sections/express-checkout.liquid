@@ -1,0 +1,200 @@
+{%- comment -%}
+  Ad landing / one-page checkout. Layout hides the site header, menus and footer for this template (see layout/theme.liquid).
+  Shoppers choose an option, review the order, then pay on Shopify's secure checkout. Recommended products sit underneath
+  and can be added to the same order with one tap. Totals shown here are estimates; Shopify checkout is the source of truth.
+{%- endcomment -%}
+{%- capture short_title -%}{% render 'product-short-title', product: product %}{%- endcapture -%}
+{%- assign short_title = short_title | strip -%}
+{%- assign current = product.selected_or_first_available_variant -%}
+{%- assign storefront_name = settings.site_name | default: shop.name -%}
+{%- assign cta_label = section.settings.cta_label | default: 'Pay securely' -%}
+{%- assign highlights = product.metafields.custom.highlights.value -%}
+{%- assign saving = 0 -%}
+{%- if current.compare_at_price > current.price -%}{%- assign saving = current.compare_at_price | minus: current.price | times: 100 | divided_by: current.compare_at_price -%}{%- endif -%}
+
+<header class="ex-top">
+  <div class="ex-top__inner">
+    <div class="ex-steps" aria-label="Checkout steps"><b>1</b><span>Your order</span><span aria-hidden="true">&rsaquo;</span><span>Secure payment</span></div>
+    <a class="wordmark" href="{{ routes.root_url }}" aria-label="{{ storefront_name | escape }}">
+      {%- if settings.logo != blank -%}{{ settings.logo | image_url: width: 360 | image_tag: class: 'logo', alt: storefront_name }}{%- else -%}{{ storefront_name }}{%- endif -%}
+    </a>
+    <span class="ex-secure"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10.5" width="14" height="9.5" rx="2"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg>Secure checkout</span>
+  </div>
+</header>
+
+<div class="ex" data-express data-product-id="{{ product.id }}">
+  <div class="ex__media" data-ex-gallery>
+    <div class="ex__stage">
+      {%- if saving > 0 -%}<span class="ex__badge" data-ex-badge>Save {{ saving }}%</span>{%- else -%}<span class="ex__badge" data-ex-badge hidden></span>{%- endif -%}
+      {%- for media in product.media -%}
+        <div class="ex__slide{% if forloop.first %} is-active{% endif %}" data-slide="{{ media.id }}">
+          {%- case media.media_type -%}
+            {%- when 'image' -%}{{ media | image_url: width: 1400 | image_tag: widths: '500, 800, 1100, 1400', sizes: '(min-width: 1000px) 50vw, 94vw', loading: 'eager', alt: media.alt | default: short_title }}
+            {%- when 'video' -%}{{ media | video_tag: controls: true, playsinline: true, preload: 'metadata' }}
+            {%- when 'external_video' -%}{{ media | external_video_tag }}
+          {%- endcase -%}
+        </div>
+      {%- endfor -%}
+      {%- if product.media.size == 0 -%}<span class="image-placeholder">{{ short_title }}</span>{%- endif -%}
+    </div>
+    {%- if product.media.size > 1 -%}
+      <div class="ex__thumbs" role="group" aria-label="Product photos">
+        {%- for media in product.media -%}
+          <button class="ex__thumb" type="button" data-thumb="{{ media.id }}" aria-label="Show {% if media.media_type == 'image' %}photo{% else %}video{% endif %} {{ forloop.index }}"{% if forloop.first %} aria-current="true"{% endif %}>
+            {{ media.preview_image | image_url: width: 160 | image_tag: width: 68, height: 68, loading: 'lazy', alt: '' }}
+          </button>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+
+  <div class="ex__panel">
+    <div>
+      {%- if product.vendor != blank and section.settings.show_vendor -%}<p class="eyebrow" style="margin-bottom:10px">{{ product.vendor | escape }}</p>{%- endif -%}
+      <h1 class="ex__title">{{ short_title | escape }}</h1>
+    </div>
+    <div class="ex__price">
+      <strong data-ex-price>{{ current.price | money }}</strong>
+      <s data-ex-compare{% unless saving > 0 %} hidden{% endunless %}>{{ current.compare_at_price | money }}</s>
+      <span class="ex__save" data-ex-save{% unless saving > 0 %} hidden{% endunless %}>You save {{ saving }}%</span>
+    </div>
+
+    {%- if highlights != blank -%}
+      <ul class="ex__points">{%- for line in highlights -%}<li>{{ line | escape }}</li>{%- endfor -%}</ul>
+    {%- elsif section.settings.points != blank -%}
+      <ul class="ex__points">{%- assign point_list = section.settings.points | newline_to_br | split: '<br />' -%}{%- for line in point_list -%}{%- assign line = line | strip -%}{%- if line != blank -%}<li>{{ line | escape }}</li>{%- endif -%}{%- endfor -%}</ul>
+    {%- endif -%}
+
+    {%- form 'product', product, class: 'ex__card', id: 'ExpressForm', data-express-form: '' -%}
+      <h2>Your order</h2>
+      {%- if product.has_only_default_variant -%}
+        <input type="hidden" name="id" value="{{ current.id }}" data-ex-variant>
+      {%- else -%}
+        <input type="hidden" name="id" value="{{ current.id }}" data-ex-variant>
+        <div class="ex__opts">
+          {%- for option in product.options_with_values -%}
+            {%- assign option_index = forloop.index0 -%}
+            <fieldset class="opt-group" style="border:0;padding:0;margin:0;min-width:0" data-ex-option="{{ option_index }}">
+              <legend class="ex__optname">{{ option.name | escape }}</legend>
+              <div class="ex__optvals" role="radiogroup" aria-label="{{ option.name | escape }}">
+                {%- for value in option.values -%}
+                  <label><input type="radio" name="ex-option-{{ option_index }}" value="{{ value | escape }}"{% if value.selected %} checked{% endif %}><span>{{ value | escape }}</span></label>
+                {%- endfor -%}
+              </div>
+            </fieldset>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+
+      <div class="ex__qtyrow">
+        <span class="ex__optname" style="margin:0" id="ExQtyLabel">Quantity</span>
+        <div class="ex__qty" role="group" aria-labelledby="ExQtyLabel">
+          <button type="button" data-ex-minus aria-label="Decrease quantity">&minus;</button>
+          <output data-ex-qty aria-live="polite">1</output>
+          <button type="button" data-ex-plus aria-label="Increase quantity">+</button>
+        </div>
+        <input type="hidden" name="quantity" value="1" data-ex-qty-input>
+      </div>
+
+      <ul class="ex__lines" data-ex-lines aria-label="Items in your order"></ul>
+      <div class="ex__totals" aria-live="polite">
+        <div><span class="muted">Subtotal</span><span data-ex-subtotal>{{ current.price | money }}</span></div>
+        <div data-ex-saved-row hidden><span class="muted">You save</span><span data-ex-saved style="color:var(--sale)"></span></div>
+        <div><span class="muted">Shipping</span><span>{{ section.settings.shipping_text | default: 'Calculated at checkout' | escape }}</span></div>
+        <div class="ex__grand"><span>Total</span><span data-ex-total>{{ current.price | money }}</span></div>
+      </div>
+      <p class="ex__error" role="alert" data-ex-error></p>
+      <button class="button button-dark ex__cta" type="submit" name="checkout" data-ex-pay{% unless current.available %} disabled{% endunless %}>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10.5" width="14" height="9.5" rx="2"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg>
+        <span data-ex-pay-label>{% if current.available %}{{ cta_label | escape }}{% else %}Sold out{% endif %}</span>
+      </button>
+      {%- if section.settings.show_express_buttons and current.available -%}
+        <div class="ex__express"><div class="ex__or"><span>or pay faster with</span></div>{{ form | payment_button }}</div>
+      {%- endif -%}
+      {%- if section.settings.show_payment_icons and shop.enabled_payment_types.size > 0 -%}
+        <ul class="ex__pay" aria-label="Accepted payment methods" role="list">{%- for type in shop.enabled_payment_types -%}<li>{{ type | payment_type_svg_tag }}</li>{%- endfor -%}</ul>
+      {%- endif -%}
+    {%- endform -%}
+
+    <ul class="ex__assure">
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10.5" width="14" height="9.5" rx="2"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg>{{ section.settings.assure_1 | default: 'Secure payment' | escape }}</li>
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.6-5.9M4 4.5v4h4"/></svg>{{ section.settings.assure_2 | default: 'Easy returns' | escape }}</li>
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6.5h11v9H3zM14 10h4l3 3v2.5h-7z"/><circle cx="7.5" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg>{{ section.settings.assure_3 | default: 'Tracked delivery' | escape }}</li>
+    </ul>
+
+    {%- if product.description != blank -%}
+      <div class="ex__details"><details><summary>Product details &amp; how to use</summary><div class="rte">{{ product.description }}</div></details></div>
+    {%- endif -%}
+  </div>
+</div>
+
+<section class="ex-more" aria-labelledby="ExMoreHeading">
+  <div class="ex-more__head"><div><h2 id="ExMoreHeading">{{ section.settings.rec_heading | escape }}</h2><p>{{ section.settings.rec_text | escape }}</p></div></div>
+  {%- if section.settings.rec_collection != blank and section.settings.rec_collection.products_count > 0 -%}
+    <div class="ex-more__grid" data-ex-recs-ready>
+      {%- assign shown = 0 -%}
+      {%- for item in section.settings.rec_collection.products -%}
+        {%- if item.id != product.id and shown < 4 -%}{% render 'upsell-card', product: item %}{%- assign shown = shown | plus: 1 -%}{%- endif -%}
+      {%- endfor -%}
+    </div>
+  {%- else -%}
+    <div data-ex-recs data-url="{{ routes.product_recommendations_url }}?product_id={{ product.id }}&limit=4&section_id=express-recommendations"></div>
+  {%- endif -%}
+</section>
+
+<footer class="ex-foot">
+  <nav aria-label="Store policies">
+    {%- for policy in shop.policies -%}{%- if policy != blank -%}<a href="{{ policy.url }}">{{ policy.title | escape }}</a>{%- endif -%}{%- endfor -%}
+    <a href="{{ routes.root_url }}">Visit full store</a>
+  </nav>
+  {%- if section.settings.disclaimer != blank -%}<p>{{ section.settings.disclaimer | escape }}</p>{%- endif -%}
+  <p>&copy; {{ 'now' | date: '%Y' }} {{ storefront_name | escape }}</p>
+</footer>
+
+<div class="ex-bar" data-ex-bar aria-hidden="true">
+  <div class="ex-bar__sum"><span>Total</span><strong data-ex-bar-total>{{ current.price | money }}</strong></div>
+  <button class="button button-dark" type="button" data-ex-bar-pay tabindex="-1">{{ cta_label | escape }}</button>
+</div>
+
+<script type="application/json" data-ex-json>
+  {
+    "moneyFormat": {{ shop.money_format | json }},
+    "shopCurrency": {{ shop.currency | json }},
+    "defaultQty": 1,
+    "variants": [
+      {%- for variant in product.variants -%}
+        {"id": {{ variant.id }}, "options": {{ variant.options | json }}, "available": {{ variant.available | json }}, "price": {{ variant.price }}, "compare": {% if variant.compare_at_price > variant.price %}{{ variant.compare_at_price }}{% else %}0{% endif %}, "mediaId": {% if variant.featured_media %}{{ variant.featured_media.id }}{% else %}null{% endif %}, "label": {{ variant.title | json }}}{% unless forloop.last %},{% endunless %}
+      {%- endfor -%}
+    ],
+    "title": {{ short_title | json }},
+    "image": {% if product.featured_image %}{{ product.featured_image | image_url: width: 160 | json }}{% else %}null{% endif %},
+    "single": {{ product.has_only_default_variant | json }},
+    "payLabel": {{ cta_label | json }}
+  }
+</script>
+<script src="{{ 'express.js' | asset_url }}" defer></script>
+<script type="application/ld+json">{{ product | structured_data }}</script>
+{% schema %}
+{
+  "name": "Ad checkout page",
+  "settings": [
+    { "type": "header", "content": "Button and trust" },
+    { "type": "text", "id": "cta_label", "label": "Pay button label", "default": "Pay securely" },
+    { "type": "checkbox", "id": "show_express_buttons", "label": "Show Shop Pay / Google Pay buttons", "info": "Shopify shows only the ones enabled in your payment settings. These buy just this product, without add-ons.", "default": false },
+    { "type": "checkbox", "id": "show_payment_icons", "label": "Show accepted payment icons", "default": true },
+    { "type": "text", "id": "shipping_text", "label": "Shipping line", "info": "Only state free shipping if you have set that rate in Shopify.", "default": "Calculated at checkout" },
+    { "type": "text", "id": "assure_1", "label": "Reassurance 1", "default": "Secure payment" },
+    { "type": "text", "id": "assure_2", "label": "Reassurance 2", "default": "Easy returns" },
+    { "type": "text", "id": "assure_3", "label": "Reassurance 3", "default": "Tracked delivery" },
+    { "type": "header", "content": "Product" },
+    { "type": "checkbox", "id": "show_vendor", "label": "Show brand name", "default": false },
+    { "type": "textarea", "id": "points", "label": "Key points (one per line)", "info": "Used when the product has no 'custom.highlights' metafield. Keep to claims you can support." },
+    { "type": "header", "content": "Recommended products" },
+    { "type": "text", "id": "rec_heading", "label": "Heading", "default": "Complete your routine" },
+    { "type": "text", "id": "rec_text", "label": "Text", "default": "Add to this order in one tap. Shipped together, paid together." },
+    { "type": "collection", "id": "rec_collection", "label": "Recommend from a collection", "info": "Leave empty to use Shopify's automatic recommendations (complementary products you set in the Search & Discovery app, otherwise related products)." },
+    { "type": "header", "content": "Footer" },
+    { "type": "textarea", "id": "disclaimer", "label": "Health disclaimer", "default": "Information on this page is for general wellbeing and is not medical advice. Our products are not intended to diagnose, treat, cure or prevent any disease. Please consult a qualified healthcare professional before use." }
+  ]
+}
+{% endschema %}

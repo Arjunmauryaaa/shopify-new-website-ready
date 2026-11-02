@@ -1,0 +1,29 @@
+<section class="wf">
+  <div class="section-heading"><div><p class="eyebrow">{{ section.settings.eyebrow | escape }}</p><h2>{{ section.settings.title | escape }}</h2></div></div>
+  <div class="wf__list">
+    {%- for block in section.blocks -%}
+      <details {{ block.shopify_attributes }}><summary>{{ block.settings.question | escape }}</summary><div>{{ block.settings.answer }}</div></details>
+    {%- endfor -%}
+  </div>
+</section>
+{% schema %}
+{
+  "name": "FAQ",
+  "max_blocks": 10,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Good to know" },
+    { "type": "text", "id": "title", "label": "Title", "default": "Frequently asked questions" }
+  ],
+  "blocks": [
+    {
+      "type": "faq",
+      "name": "Question",
+      "settings": [
+        { "type": "text", "id": "question", "label": "Question", "default": "How long does delivery take?" },
+        { "type": "richtext", "id": "answer", "label": "Answer", "default": "<p>Delivery estimates are shown at checkout once you enter your address.</p>" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "FAQ" }]
+}
+{% endschema %}

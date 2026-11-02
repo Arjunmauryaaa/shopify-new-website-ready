@@ -9,85 +9,59 @@
  */
 {
   "sections": {
-    "hero": {
-      "type": "home-hero",
-      "settings": {}
-    },
+    "hero": { "type": "wellness-hero", "settings": {} },
     "trust": {
       "type": "trust-bar",
       "blocks": {
-        "t1": { "type": "item", "settings": { "icon": "truck", "title": "Free shipping", "text": "On orders over Rs. 2,000" } },
-        "t2": { "type": "item", "settings": { "icon": "return", "title": "Easy returns", "text": "15-day return window" } },
-        "t3": { "type": "item", "settings": { "icon": "lock", "title": "Secure checkout", "text": "Pay safely with Razorpay" } },
-        "t4": { "type": "item", "settings": { "icon": "heart", "title": "Made for little ones", "text": "Soft, comfortable everyday pieces" } }
+        "t1": { "type": "item", "settings": { "icon": "truck", "title": "Tracked delivery", "text": "Shipping options shown at checkout" } },
+        "t2": { "type": "item", "settings": { "icon": "return", "title": "Easy returns", "text": "See our returns policy" } },
+        "t3": { "type": "item", "settings": { "icon": "lock", "title": "Secure checkout", "text": "Pay safely with trusted methods" } },
+        "t4": { "type": "item", "settings": { "icon": "heart", "title": "Friendly support", "text": "We're here to help" } }
       },
       "block_order": ["t1", "t2", "t3", "t4"],
       "settings": {}
     },
-    "categories": {
-      "type": "category-tiles",
+    "needs": {
+      "type": "shop-by-need",
       "blocks": {
-        "c1": { "type": "tile", "settings": { "collection": "bodysuits", "title": "Bodysuits" } },
-        "c2": { "type": "tile", "settings": { "collection": "knitwear", "title": "Knitwear" } },
-        "c3": { "type": "tile", "settings": { "title": "Sleepwear" } },
-        "c4": { "type": "tile", "settings": { "title": "Accessories" } }
+        "n1": { "type": "tile", "settings": { "title": "Skin care", "icon": "skin" } },
+        "n2": { "type": "tile", "settings": { "title": "Hair care", "icon": "hair" } },
+        "n3": { "type": "tile", "settings": { "title": "Immunity", "icon": "immunity" } },
+        "n4": { "type": "tile", "settings": { "title": "Sleep & calm", "icon": "sleep" } },
+        "n5": { "type": "tile", "settings": { "title": "Oral care", "icon": "oral" } },
+        "n6": { "type": "tile", "settings": { "title": "Body care", "icon": "body" } }
       },
-      "block_order": ["c1", "c2", "c3", "c4"],
+      "block_order": ["n1", "n2", "n3", "n4", "n5", "n6"],
       "settings": {}
     },
-    "arrivals": {
+    "bestsellers": {
       "type": "featured-collection",
-      "settings": {
-        "eyebrow": "Just in",
-        "title": "New Arrivals",
-        "collection": "all",
-        "limit": 8
-      }
+      "settings": { "eyebrow": "Customer favourites", "title": "Best sellers", "collection": "all", "limit": 8 }
     },
-    "panels": {
-      "type": "editorial-panels",
+    "why": { "type": "wellness-benefits", "settings": {}, "blocks": {
+      "b1": { "type": "benefit", "settings": { "icon": "shield", "title": "Carefully selected", "text": "Products picked for quality and everyday use." } },
+      "b2": { "type": "benefit", "settings": { "icon": "leaf", "title": "Clear information", "text": "Know what is in a product and how to use it." } },
+      "b3": { "type": "benefit", "settings": { "icon": "truck", "title": "Reliable delivery", "text": "Tracked shipping from our store to your door." } },
+      "b4": { "type": "benefit", "settings": { "icon": "heart", "title": "Friendly support", "text": "Questions? Our team is happy to help." } }
+    }, "block_order": ["b1", "b2", "b3", "b4"] },
+    "video": { "type": "wellness-video", "settings": {} },
+    "new": {
+      "type": "featured-collection",
+      "settings": { "eyebrow": "Just in", "title": "New arrivals", "collection": "all", "limit": 4 }
+    },
+    "reviews": { "type": "wellness-reviews", "settings": {} },
+    "faq": {
+      "type": "wellness-faq",
+      "blocks": {
+        "q1": { "type": "faq", "settings": { "question": "How long does delivery take?", "answer": "<p>Delivery estimates are shown at checkout once you enter your address.</p>" } },
+        "q2": { "type": "faq", "settings": { "question": "What is your returns policy?", "answer": "<p>Please see our returns and refund policy linked in the footer for the full details.</p>" } },
+        "q3": { "type": "faq", "settings": { "question": "Is checkout secure?", "answer": "<p>Yes. Payments are processed on Shopify's secure checkout.</p>" } }
+      },
+      "block_order": ["q1", "q2", "q3"],
       "settings": {}
     },
-    "story": {
-      "type": "home-story",
-      "settings": {}
-    },
-    "featured": {
-      "type": "featured-edit",
-      "settings": {
-        "collection": "all"
-      }
-    },
-    "video": {
-      "type": "campaign-video",
-      "settings": {}
-    },
-    "statement": {
-      "type": "brand-statement",
-      "settings": {}
-    },
-    "journal": {
-      "type": "journal-preview",
-      "settings": {
-        "blog": "journal"
-      }
-    },
-    "newsletter": {
-      "type": "newsletter",
-      "settings": {}
-    }
+    "newsletter": { "type": "newsletter", "settings": { "eyebrow": "Stay in touch", "heading": "Wellness tips and new arrivals", "body": "Join our list for gentle reminders, new products and offers." } },
+    "disclaimer": { "type": "disclaimer", "settings": {} }
   },
-  "order": [
-    "hero",
-    "trust",
-    "categories",
-    "arrivals",
-    "panels",
-    "story",
-    "featured",
-    "video",
-    "statement",
-    "journal",
-    "newsletter"
-  ]
+  "order": ["hero", "trust", "needs", "bestsellers", "why", "video", "new", "reviews", "faq", "newsletter", "disclaimer"]
 }

@@ -4,7 +4,7 @@
   const update = (theme, persist = true) => {
     if (theme === 'dark') root.dataset.theme = 'dark';
     else delete root.dataset.theme;
-    if (meta) meta.content = theme === 'dark' ? '#141413' : '#ffffff';
+    if (meta) meta.content = theme === 'dark' ? '#141413' : '#fbfaf6';
     document.querySelectorAll('[data-theme-label]').forEach((label) => {
       label.textContent = theme === 'dark' ? 'Light mode' : 'Dark mode';
     });

@@ -1,0 +1,22 @@
+{%- comment -%} Recommended product on the ad checkout page. assets/express.js reads the data-* attributes to add it to the order. {%- endcomment -%}
+{%- capture card_title -%}{% render 'product-short-title', product: product %}{%- endcapture -%}
+{%- assign card_title = card_title | strip -%}
+{%- assign v = product.selected_or_first_available_variant -%}
+<article class="up" data-up data-title="{{ card_title | escape }}" data-img="{% if product.featured_image %}{{ product.featured_image | image_url: width: 160 }}{% endif %}"
+  data-variant="{{ v.id }}" data-price="{{ v.price }}" data-compare="{% if v.compare_at_price > v.price %}{{ v.compare_at_price }}{% else %}0{% endif %}" data-label="{% unless product.has_only_default_variant %}{{ v.title | escape }}{% endunless %}">
+  <a class="up__img" href="{{ product.url }}?view=express" tabindex="-1" aria-hidden="true">
+    {%- if product.featured_image -%}{{ product.featured_image | image_url: width: 600 | image_tag: widths: '240, 360, 480, 600', sizes: '(min-width: 1000px) 18vw, 44vw', loading: 'lazy', alt: '' }}{%- else -%}<span class="image-placeholder">{{ card_title }}</span>{%- endif -%}
+  </a>
+  <div class="up__body">
+    <a class="up__title" href="{{ product.url }}?view=express">{{ card_title }}</a>
+    {%- unless product.has_only_default_variant -%}
+      <select data-up-variant aria-label="Option for {{ card_title | escape }}">
+        {%- for variant in product.variants -%}
+          <option value="{{ variant.id }}" data-price="{{ variant.price }}" data-compare="{% if variant.compare_at_price > variant.price %}{{ variant.compare_at_price }}{% else %}0{% endif %}" data-label="{{ variant.title | escape }}"{% if variant == v %} selected{% endif %}{% unless variant.available %} disabled{% endunless %}>{{ variant.title | escape }}{% unless variant.available %} - Sold out{% endunless %}</option>
+        {%- endfor -%}
+      </select>
+    {%- endunless -%}
+    <span class="up__price"><span data-up-price>{{ v.price | money }}</span>{% if v.compare_at_price > v.price %}<s data-up-compare>{{ v.compare_at_price | money }}</s>{% endif %}</span>
+  </div>
+  <button type="button" class="up__add" data-up-add aria-pressed="false"{% unless v.available %} disabled{% endunless %}>{% if v.available %}Add to my order{% else %}Sold out{% endif %}</button>
+</article>

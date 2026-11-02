@@ -1,0 +1,9 @@
+{%- comment -%} Loaded by assets/express.js through the Section Rendering API (product_recommendations_url). {%- endcomment -%}
+{%- if recommendations.performed and recommendations.products_count > 0 -%}
+  <div class="ex-more__grid" data-ex-recs-ready>
+    {%- for item in recommendations.products limit: 4 -%}{% render 'upsell-card', product: item %}{%- endfor -%}
+  </div>
+{%- endif -%}
+{% schema %}
+{"name":"Express recommendations","settings":[]}
+{% endschema %}

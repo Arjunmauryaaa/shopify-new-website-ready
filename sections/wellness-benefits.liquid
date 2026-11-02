@@ -1,0 +1,60 @@
+<section class="wb">
+  <div class="wb__inner">
+    <div class="wb__media">
+      {%- if section.settings.image != blank -%}
+        {{ section.settings.image | image_url: width: 1200 | image_tag: widths: '500, 800, 1200', sizes: '(min-width: 1000px) 42vw, 92vw', loading: 'lazy', alt: section.settings.image.alt | default: section.settings.heading }}
+      {%- else -%}
+        <img src="{{ 'wh-benefits.jpg' | asset_url }}" width="1200" height="1500" alt="Dummy health and personal care products" loading="lazy">
+      {%- endif -%}
+    </div>
+    <div class="wb__copy">
+      <p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>
+      <h2>{{ section.settings.heading | escape }}</h2>
+      <p>{{ section.settings.body | escape }}</p>
+      <ul class="wb__list">
+        {%- for block in section.blocks -%}
+          <li class="wb__item" {{ block.shopify_attributes }}>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              {%- case block.settings.icon -%}
+                {%- when 'leaf' -%}<path d="M5 19c0-8 5-13 14-14 0 9-5 14-13 14"/><path d="M5 19c3-4 6-7 9-9"/>
+                {%- when 'shield' -%}<path d="M12 3 5 6v5.5c0 4.4 3 7.5 7 9.5 4-2 7-5.1 7-9.5V6l-7-3Z"/><path d="m9 12 2 2 4-4.5"/>
+                {%- when 'flask' -%}<path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 1.8 3h10.4A2 2 0 0 0 19 18l-5-9V3"/><path d="M7.500 15h9"/>
+                {%- when 'truck' -%}<path d="M3 6.500h11v9H3zM14 10h4l3 3v2.500h-7z"/><circle cx="7.500" cy="17.500" r="1.800"/><circle cx="17" cy="17.500" r="1.800"/>
+                {%- when 'star' -%}<path d="m12 3.500 2.600 5.400 5.900.8-4.300 4.100 1 5.800L12 16.800l-5.200 2.800 1-5.800L3.500 9.700l5.900-.8L12 3.500Z"/>
+                {%- else -%}<path d="M12 20s-7.500-4.600-7.500-10A4.300 4.300 0 0 1 12 7.400 4.300 4.300 0 0 1 19.500 10c0 5.400-7.500 10-7.500 10Z"/>
+              {%- endcase -%}
+            </svg>
+            <strong>{{ block.settings.title | escape }}</strong>
+            <span>{{ block.settings.text | escape }}</span>
+          </li>
+        {%- endfor -%}
+      </ul>
+    </div>
+  </div>
+</section>
+{% schema %}
+{
+  "name": "Why choose us",
+  "max_blocks": 6,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Why us" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Care you can feel good about" },
+    { "type": "textarea", "id": "body", "label": "Text", "default": "Every product is chosen with your daily routine in mind, with clear information and support whenever you need it." },
+    { "type": "image_picker", "id": "image", "label": "Photo" }
+  ],
+  "blocks": [
+    {
+      "type": "benefit",
+      "name": "Benefit",
+      "settings": [
+        { "type": "select", "id": "icon", "label": "Icon", "default": "shield", "options": [
+          { "value": "leaf", "label": "Leaf" }, { "value": "shield", "label": "Shield" }, { "value": "flask", "label": "Flask" }, { "value": "truck", "label": "Delivery" }, { "value": "star", "label": "Star" }, { "value": "heart", "label": "Heart" }
+        ] },
+        { "type": "text", "id": "title", "label": "Title", "default": "Carefully selected" },
+        { "type": "text", "id": "text", "label": "Text", "default": "Products picked for quality and everyday use." }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Why choose us", "blocks": [{ "type": "benefit", "settings": { "icon": "shield", "title": "Carefully selected", "text": "Products picked for quality and everyday use." } }, { "type": "benefit", "settings": { "icon": "leaf", "title": "Clear information", "text": "Know what is in a product and how to use it." } }, { "type": "benefit", "settings": { "icon": "truck", "title": "Reliable delivery", "text": "Tracked shipping from our store to your door." } }, { "type": "benefit", "settings": { "icon": "heart", "title": "Friendly support", "text": "Questions? Our team is happy to help." } }] }]
+}
+{% endschema %}

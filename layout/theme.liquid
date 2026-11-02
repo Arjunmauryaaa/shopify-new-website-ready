@@ -12,7 +12,7 @@
     {% render 'seo-meta' %}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@400;500&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=DM+Sans:wght@400;500;600;700&display=swap">
     {{ content_for_header }}
     {{ 'theme.css' | asset_url | stylesheet_tag }}
     {{ 'home.css' | asset_url | stylesheet_tag }}
@@ -21,6 +21,7 @@
     {{ 'enhance.css' | asset_url | stylesheet_tag }}
     {{ 'polish.css' | asset_url | stylesheet_tag }}
     {{ 'premium.css' | asset_url | stylesheet_tag }}
+    {{ 'wellness.css' | asset_url | stylesheet_tag }}
     <script>
       window.themeConfig = {
         currency: {{ cart.currency.iso_code | json }},
@@ -41,14 +42,18 @@
     <script src="{{ 'enhance.js' | asset_url }}" defer></script>
     <style>:root{--bg:{{ settings.background }};--text:{{ settings.text }};--muted:{{ settings.muted }};--line:{{ settings.line }}}</style>
   </head>
-  <body class="template-{{ template.name }}">
+  {%- assign express_page = false -%}{%- if template.suffix == 'express' -%}{%- assign express_page = true -%}{%- endif -%}
+  <body class="template-{{ template.name }}{% if express_page %} is-express{% endif %}">
     <a class="skip-link" href="#MainContent">Skip to content</a>
-    {% sections 'header-group' %}
+    {%- comment -%} Ad landing pages (product.express) drop the site chrome so nothing pulls the shopper away from paying. {%- endcomment -%}
+    {% unless express_page %}{% sections 'header-group' %}{% endunless %}
     <main id="MainContent" role="main">{{ content_for_layout }}</main>
-    {% sections 'footer-group' %}
-    {% section 'cart-drawer' %}
-    {% render 'search-dialog' %}
-    {% render 'bottom-nav' %}
+    {% unless express_page %}
+      {% sections 'footer-group' %}
+      {% section 'cart-drawer' %}
+      {% render 'search-dialog' %}
+      {% render 'bottom-nav' %}
+    {% endunless %}
     <div class="visually-hidden" role="status" aria-live="polite" data-announce></div>
   </body>
 </html>

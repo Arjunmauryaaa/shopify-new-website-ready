@@ -37,6 +37,7 @@
     {% endif %}
   </div>
 
+  {% if section.settings.disclaimer != blank %}<p class="footer-disclaimer">{{ section.settings.disclaimer | escape }}</p>{% endif %}
   <div class="footer-bottom">
     <span>&copy; {{ 'now' | date: '%Y' }} {{ storefront_name | escape }}</span>
     {% if section.settings.show_policies and shop.policies.size > 0 %}
@@ -64,7 +65,7 @@
 {
   "name": "Footer",
   "settings": [
-    { "type": "text", "id": "note", "label": "Brand note", "default": "Thoughtfully chosen. Made to be lived in." },
+    { "type": "text", "id": "note", "label": "Brand note", "default": "Health & personal care essentials for your everyday routine." },
     { "type": "text", "id": "shop_heading", "label": "Shop links heading", "default": "Shop" },
     { "type": "link_list", "id": "shop_menu", "label": "Shop links", "default": "main-menu" },
     { "type": "text", "id": "help_heading", "label": "Help links heading", "default": "Customer care" },
@@ -73,6 +74,7 @@
     { "type": "text", "id": "newsletter_heading", "label": "Newsletter heading", "default": "Stay in the know" },
     { "type": "checkbox", "id": "show_policies", "label": "Show store policies", "default": true },
     { "type": "checkbox", "id": "show_country_selector", "label": "Show country and currency selector", "default": true },
+    { "type": "textarea", "id": "disclaimer", "label": "Health disclaimer", "default": "Information on this site is for general wellbeing and is not medical advice. Our products are not intended to diagnose, treat, cure or prevent any disease. Consult a qualified healthcare professional before use." },
     { "type": "checkbox", "id": "show_payments", "label": "Show accepted payment methods", "default": true }
   ]
 }
