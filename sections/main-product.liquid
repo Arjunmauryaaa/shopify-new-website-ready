@@ -23,9 +23,14 @@
     <nav class="breadcrumb" aria-label="Breadcrumb"><a href="{{ routes.root_url }}">Home</a><span aria-hidden="true">/</span>{% if collection %}<a href="{{ collection.url }}">{{ collection.title | escape }}</a>{% else %}<a href="{{ routes.all_products_collection_url }}">Shop</a>{% endif %}</nav>
     {%- if product.vendor != blank -%}<p class="eyebrow">{{ product.vendor | escape }}</p>{%- endif -%}
     <h1>{{ short_title | escape }}</h1>
+    {%- assign auto_pct_list = "15,20,25,30,18,22,28,12,16,24,26,14,19,27,21" | split: "," -%}
+    {%- assign auto_pct_idx = product.id | modulo: auto_pct_list.size -%}
+    {%- assign auto_markup = auto_pct_list[auto_pct_idx] | plus: 0 -%}
+    {%- assign auto_multiplier = 100 | plus: auto_markup -%}
+
     {%- assign compare_price = current.compare_at_price -%}
     {%- if compare_price == blank or compare_price <= current.price -%}
-      {%- assign compare_price = current.price | times: 130 | divided_by: 10000 | times: 100 -%}
+      {%- assign compare_price = current.price | times: auto_multiplier | divided_by: 10000 | times: 100 -%}
     {%- endif -%}
     {%- assign save_amount = compare_price | minus: current.price -%}
     {%- assign save_pct = save_amount | times: 100 | divided_by: compare_price | round -%}
@@ -61,7 +66,7 @@
                 {%- endfor -%}
                 {%- assign opt_compare = opt_variant.compare_at_price -%}
                 {%- if opt_compare == blank or opt_compare <= opt_variant.price -%}
-                  {%- assign opt_compare = opt_variant.price | times: 130 | divided_by: 10000 | times: 100 -%}
+                  {%- assign opt_compare = opt_variant.price | times: auto_multiplier | divided_by: 10000 | times: 100 -%}
                 {%- endif -%}
                 <label class="opt{% if value.swatch.color %} opt--swatch{% endif %}">
                   <input type="radio" name="option-{{ option_index }}" value="{{ value | escape }}"{% if value.selected %} checked{% endif %} data-option-value>
@@ -151,7 +156,7 @@
       {%- for variant in product.variants -%}
         {%- assign v_compare = variant.compare_at_price -%}
         {%- if v_compare == blank or v_compare <= variant.price -%}
-          {%- assign v_compare = variant.price | times: 130 | divided_by: 10000 | times: 100 -%}
+          {%- assign v_compare = variant.price | times: auto_multiplier | divided_by: 10000 | times: 100 -%}
         {%- endif -%}
         {%- assign v_save_amt = v_compare | minus: variant.price -%}
         {%- assign v_save_pct = v_save_amt | times: 100 | divided_by: v_compare | round -%}

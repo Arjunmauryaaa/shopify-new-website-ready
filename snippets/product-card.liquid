@@ -9,9 +9,13 @@
       {%- else -%}
         <span class="image-placeholder">{{ card_title }}</span>
       {%- endif -%}
+      {%- assign auto_pct_list = "15,20,25,30,18,22,28,12,16,24,26,14,19,27,21" | split: "," -%}
+      {%- assign auto_pct_idx = product.id | modulo: auto_pct_list.size -%}
+      {%- assign auto_markup = auto_pct_list[auto_pct_idx] | plus: 0 -%}
+      {%- assign auto_multiplier = 100 | plus: auto_markup -%}
       {%- assign card_compare = product.compare_at_price -%}
       {%- if card_compare == blank or card_compare <= product.price -%}
-        {%- assign card_compare = product.price | times: 130 | divided_by: 10000 | times: 100 -%}
+        {%- assign card_compare = product.price | times: auto_multiplier | divided_by: 10000 | times: 100 -%}
       {%- endif -%}
       {%- assign card_save_pct = card_compare | minus: product.price | times: 100 | divided_by: card_compare | round -%}
       {%- if product.available == false -%}<span class="tag">Sold out</span>
