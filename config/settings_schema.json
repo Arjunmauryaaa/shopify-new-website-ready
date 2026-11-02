@@ -20,25 +20,25 @@
         "type": "color",
         "id": "background",
         "label": "Background",
-        "default": "#fbfaf6"
+        "default": "#f2eee6"
       },
       {
         "type": "color",
         "id": "text",
         "label": "Text",
-        "default": "#16302c"
+        "default": "#1c2622"
       },
       {
         "type": "color",
         "id": "muted",
         "label": "Muted text",
-        "default": "#566663"
+        "default": "#5b645e"
       },
       {
         "type": "color",
         "id": "line",
         "label": "Lines",
-        "default": "#dfe6df"
+        "default": "#d9d2c3"
       },
       {
         "type": "image_picker",

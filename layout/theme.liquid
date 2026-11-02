@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
     <meta name="theme-color" content="{{ settings.background }}">
-    <script>try{if(localStorage.getItem('arjunta-theme')==='dark'){document.documentElement.dataset.theme='dark';document.querySelector('meta[name="theme-color"]').content='#141413'}}catch(e){}</script>
+    <script>try{if(localStorage.getItem('arjunta-theme')==='dark'){document.documentElement.dataset.theme='dark';document.querySelector('meta[name="theme-color"]').content='#141a17'}}catch(e){}</script>
     <link rel="canonical" href="{{ canonical_url }}">
     {% assign storefront_name = settings.site_name | default: shop.name %}
     <title>{{ page_title }}{% if current_tags %} - {{ current_tags | join: ', ' }}{% endif %}{% unless page_title contains storefront_name %} - {{ storefront_name }}{% endunless %}</title>
@@ -40,6 +40,7 @@
     </script>
     <script src="{{ 'theme.js' | asset_url }}" defer></script>
     <script src="{{ 'enhance.js' | asset_url }}" defer></script>
+    <script src="{{ 'wellness.js' | asset_url }}" defer></script>
     <style>:root{--bg:{{ settings.background }};--text:{{ settings.text }};--muted:{{ settings.muted }};--line:{{ settings.line }}}</style>
   </head>
   {%- assign express_page = false -%}{%- if template.suffix == 'express' -%}{%- assign express_page = true -%}{%- endif -%}

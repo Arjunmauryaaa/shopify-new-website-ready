@@ -21,6 +21,13 @@
       "block_order": ["t1", "t2", "t3", "t4"],
       "settings": {}
     },
+    "ticker": { "type": "marquee-strip", "settings": {}, "blocks": {
+      "m1": { "type": "item", "settings": { "text": "Quality checked" } },
+      "m2": { "type": "item", "settings": { "text": "Secure checkout" } },
+      "m3": { "type": "item", "settings": { "text": "Easy returns" } },
+      "m4": { "type": "item", "settings": { "text": "Tracked delivery" } },
+      "m5": { "type": "item", "settings": { "text": "Everyday essentials" } }
+    }, "block_order": ["m1", "m2", "m3", "m4", "m5"] },
     "needs": {
       "type": "shop-by-need",
       "blocks": {
@@ -36,7 +43,7 @@
     },
     "bestsellers": {
       "type": "featured-collection",
-      "settings": { "eyebrow": "Customer favourites", "title": "Best sellers", "collection": "all", "limit": 8 }
+      "settings": { "eyebrow": "Customer favourites", "title": "Best sellers", "collection": "all", "limit": 8, "carousel": true }
     },
     "why": { "type": "wellness-benefits", "settings": {}, "blocks": {
       "b1": { "type": "benefit", "settings": { "icon": "shield", "title": "Carefully selected", "text": "Products picked for quality and everyday use." } },
@@ -60,8 +67,9 @@
       "block_order": ["q1", "q2", "q3"],
       "settings": {}
     },
+    "statement": { "type": "brand-statement", "settings": {} },
     "newsletter": { "type": "newsletter", "settings": { "eyebrow": "Stay in touch", "heading": "Wellness tips and new arrivals", "body": "Join our list for gentle reminders, new products and offers." } },
     "disclaimer": { "type": "disclaimer", "settings": {} }
   },
-  "order": ["hero", "trust", "needs", "bestsellers", "why", "video", "new", "reviews", "faq", "newsletter", "disclaimer"]
+  "order": ["hero", "ticker", "trust", "needs", "bestsellers", "why", "video", "new", "reviews", "faq", "statement", "newsletter", "disclaimer"]
 }

@@ -6,7 +6,7 @@
   <div class="wh-hero__inner">
     <div class="wh-hero__copy">
       {%- if section.settings.eyebrow != blank -%}<span class="pill">{{ section.settings.eyebrow | escape }}</span>{%- endif -%}
-      <h1>{{ section.settings.heading | strip_html | escape }}</h1>
+      <h1>{{ section.settings.heading | escape }}{% if section.settings.heading_accent != blank %} <em>{{ section.settings.heading_accent | escape }}</em>{% endif %}</h1>
       <p class="wh-hero__body">{{ section.settings.body | escape }}</p>
       <div class="wh-hero__actions">
         <a class="button button-dark" href="{{ cta_link }}">{{ section.settings.button_label | escape }}</a>
@@ -18,7 +18,7 @@
         {%- if section.settings.point_3 != blank -%}<li>{{ section.settings.point_3 | escape }}</li>{%- endif -%}
       </ul>
     </div>
-    <div class="wh-hero__stage">
+    <div class="wh-hero__stage" data-parallax>
       <div class="wh-hero__frame">
         {%- if section.settings.video != blank -%}
           {{ section.settings.video | video_tag: autoplay: true, loop: true, muted: true, playsinline: true, controls: false, image_size: '1200x1400', preload: 'metadata' }}
@@ -42,7 +42,8 @@
   "name": "Wellness hero",
   "settings": [
     { "type": "text", "id": "eyebrow", "label": "Badge", "default": "Health & personal care" },
-    { "type": "text", "id": "heading", "label": "Heading", "default": "Everyday care, made gentle." },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Everyday care," },
+    { "type": "text", "id": "heading_accent", "label": "Heading (italic accent line)", "default": "made gentle." },
     { "type": "textarea", "id": "body", "label": "Text", "default": "Thoughtfully chosen health and personal care essentials for a calmer, simpler daily routine." },
     { "type": "text", "id": "button_label", "label": "Button label", "default": "Shop now" },
     { "type": "url", "id": "main_link", "label": "Button link" },

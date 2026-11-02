@@ -1,0 +1,26 @@
+{%- comment -%} Scrolling text ticker. Add short phrases as blocks. {%- endcomment -%}
+{%- if section.blocks.size > 0 -%}
+<section class="mq" aria-label="{{ section.settings.label | escape }}">
+  <div class="mq__track">
+    {%- for i in (1..2) -%}
+      <div class="mq__group"{% if i == 2 %} aria-hidden="true"{% endif %}>
+        {%- for block in section.blocks -%}<span class="mq__item" {{ block.shopify_attributes }}>{{ block.settings.text | escape }}</span>{%- endfor -%}
+        {%- for block in section.blocks -%}<span class="mq__item">{{ block.settings.text | escape }}</span>{%- endfor -%}
+      </div>
+    {%- endfor -%}
+  </div>
+</section>
+{%- endif -%}
+{% schema %}
+{
+  "name": "Scrolling ticker",
+  "max_blocks": 8,
+  "settings": [
+    { "type": "text", "id": "label", "label": "Accessible label", "default": "Store highlights" }
+  ],
+  "blocks": [
+    { "type": "item", "name": "Phrase", "settings": [ { "type": "text", "id": "text", "label": "Text", "default": "Quality checked" } ] }
+  ],
+  "presets": [{ "name": "Scrolling ticker", "blocks": [{ "type": "item", "settings": { "text": "Quality checked" } }, { "type": "item", "settings": { "text": "Secure checkout" } }, { "type": "item", "settings": { "text": "Easy returns" } }, { "type": "item", "settings": { "text": "Tracked delivery" } }] }]
+}
+{% endschema %}
