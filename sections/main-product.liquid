@@ -160,7 +160,7 @@
         {%- endif -%}
         {%- assign v_save_amt = v_compare | minus: variant.price -%}
         {%- assign v_save_pct = v_save_amt | times: 100 | divided_by: v_compare | round -%}
-        {"id": {{ variant.id }}, "options": {{ variant.options | json }}, "available": {{ variant.available | json }}, "price": {{ variant.price | money | json }}, "priceCents": {{ variant.price }}, "compare": {{ v_compare | money | json }}, "compareCents": {{ v_compare }}, "saveAmount": {{ v_save_amt | money | json }}, "savePct": {{ v_save_pct }}, "mediaId": {% if variant.featured_media %}{{ variant.featured_media.id }}{% else %}null{% endif %}}{% unless forloop.last %},{% endunless %}
+        {"id": {{ variant.id }}, "options": {{ variant.options | json }}, "available": {{ variant.available | json }}, "price": {{ variant.price | money | strip_html | json }}, "priceCents": {{ variant.price }}, "compare": {{ v_compare | money | strip_html | json }}, "compareCents": {{ v_compare }}, "saveAmount": {{ v_save_amt | money | strip_html | json }}, "savePct": {{ v_save_pct }}, "mediaId": {% if variant.featured_media %}{{ variant.featured_media.id }}{% else %}null{% endif %}}{% unless forloop.last %},{% endunless %}
       {%- endfor -%}
     ]
   }
