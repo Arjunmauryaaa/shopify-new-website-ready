@@ -408,3 +408,11 @@ body.is-express{background:var(--bone);padding-bottom:0}
 }
 @media(max-width:420px){.ex__assure,.pdp-assure{gap:6px}.ex__line{grid-template-columns:42px 1fr auto}.ex__line img{width:42px;height:42px}}
 .ex [hidden],.ex-top [hidden],.ex-bar [hidden]{display:none!important}
+
+/* Product description: neutralise pasted inline styles (spans, fonts, fixed widths) */
+.product-accordion-content,.ex__details .rte{overflow-wrap:anywhere;word-break:normal;max-width:100%}
+.product-accordion-content *,.ex__details .rte *{max-width:100%!important;box-sizing:border-box}
+.product-accordion-content span,.ex__details .rte span,.product-accordion-content font,.ex__details .rte font{font:inherit!important;color:inherit!important;background:none!important;letter-spacing:inherit!important;line-height:inherit!important;white-space:normal!important;display:inline!important;float:none!important;position:static!important;width:auto!important;height:auto!important;margin:0!important;padding:0!important;border:0!important}
+.product-accordion-content p,.ex__details .rte p{font-size:15px;line-height:1.65;margin:0 0 .9em;width:auto!important;height:auto!important}
+.product-accordion-content img,.ex__details .rte img{height:auto!important}
+.product-accordion-content table,.ex__details .rte table{display:block;overflow-x:auto}

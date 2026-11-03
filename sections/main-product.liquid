@@ -118,7 +118,7 @@
       {%- if settings.delivery_note != blank -%}<span>{{ settings.delivery_note | escape }}</span>{%- else -%}<span>Shipping options shown at checkout</span>{%- endif -%}
     </div>
     <div class="product-accordions">
-      {%- if product.description != blank -%}<details open><summary>Details &amp; how to use</summary><div class="product-accordion-content rte">{{ product.description }}</div></details>{%- endif -%}
+      {%- if product.description != blank -%}<details open><summary>Details &amp; how to use</summary><div class="product-accordion-content rte">{% render 'product-description' %}</div></details>{%- endif -%}
       <details><summary>Shipping &amp; returns</summary><div class="product-accordion-content">Review the <a href="/policies/shipping-policy">shipping policy</a> and <a href="/policies/refund-policy">refund policy</a> before ordering.</div></details>
     </div>
     <p class="product-payment-note">Fast payment options appear when enabled in your Shopify payment settings.</p>

@@ -130,7 +130,7 @@
     </ul>
 
     {%- if product.description != blank -%}
-      <div class="ex__details"><details><summary>Product details &amp; how to use</summary><div class="rte">{{ product.description }}</div></details></div>
+      <div class="ex__details"><details><summary>Product details &amp; how to use</summary><div class="rte">{% render 'product-description' %}</div></details></div>
     {%- endif -%}
   </div>
 </div>

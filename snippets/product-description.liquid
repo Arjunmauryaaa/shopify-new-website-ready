@@ -1,0 +1,6 @@
+{%- comment -%} Renders product.description; repairs HTML that was saved as escaped text (&lt;span&gt;) so tags never show on screen. {%- endcomment -%}
+{%- assign desc = product.description -%}
+{%- if desc contains '&lt;' -%}
+  {%- assign desc = desc | replace: '&lt;', '<' | replace: '&gt;', '>' | replace: '&quot;', '"' | replace: '&#39;', "'" | replace: '&amp;nbsp;', ' ' -%}
+{%- endif -%}
+{{ desc }}
